@@ -1,0 +1,15 @@
+{
+  "features": [
+    "Age",
+    "Previous High Blood Sugar Levels",
+    "LEU",
+    "MCHC",
+    "WaistCircumference",
+    "APTT",
+    "QUICK",
+    "Potassium",
+    "MCH",
+    "Smoking for how long"
+  ],
+  "model_key": "gb"
+}
