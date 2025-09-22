@@ -270,6 +270,19 @@ div[data-testid="stButton"] button[purpose="primary"] {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* Import Merriweather from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+
+/* Apply globally */
+html, body, [class*="css"]  {
+    font-family: 'Merriweather', serif !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
