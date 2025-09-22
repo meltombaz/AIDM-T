@@ -5,3 +5,4 @@ scipy==1.13.0
 scikit-learn==1.4.2
 joblib==1.4.0
 matplotlib==3.8.4
+streamlit-option-menu
