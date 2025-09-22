@@ -155,6 +155,57 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.markdown("""
+<style>
+/* ===== Streamlit native tabs (st.tabs) ===== */
+.stTabs [data-baseweb="tab-list"]{
+  gap:.5rem;
+  background:#004994;               /* band */
+  padding:.35rem;
+  border-radius:12px;
+}
+.stTabs [data-baseweb="tab"]{
+  color:#ffffff !important;          /* default text on blue band */
+  background:transparent;
+  border-radius:10px;
+  padding:.45rem .95rem;
+  border:1px solid rgba(255,255,255,.18);
+}
+.stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
+.stTabs [aria-selected="true"]{
+  background:#006226 !important;     /* active pill */
+  color:#ffffff !important;
+  border-color:#006226 !important;
+}
+/* kill BaseWeb highlight bar */
+.stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
+
+/* ===== streamlit-option-menu (fallback) ===== */
+.top-nav{
+  background:#004994; border-radius:12px; padding:.35rem .5rem; margin:.4rem 0 1rem 0;
+}
+.top-nav .nav-link{
+  color:#ffffff !important; font-weight:700; border-radius:10px; padding:.45rem .95rem;
+  border:1px solid rgba(255,255,255,.18);
+}
+.top-nav .nav-link:hover{ background:#003b7a !important; }
+.top-nav .nav-link.active{ background:#006226 !important; color:#ffffff !important; }
+
+/* ===== Radio-as-tabs (if you used a horizontal radio) ===== */
+.tab-radio [role="radiogroup"]{
+  display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
+}
+.tab-radio [role="radio"]{
+  background:transparent; border-radius:10px; padding:.45rem .95rem;
+  border:1px solid rgba(255,255,255,.18);
+}
+.tab-radio [role="radio"] p{ color:#ffffff !important; }           /* radio label text */
+.tab-radio [aria-checked="true"]{ background:#006226 !important; border-color:#006226 !important; }
+.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+</style>
+""", unsafe_allow_html=True)
+
+
 
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
