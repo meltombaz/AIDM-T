@@ -288,11 +288,27 @@ try:
 except Exception as e:
     st.error(str(e))
     st.stop()
-
-
 # ------------------ Friendly labels & alias mapping ------------------
 YESNO_2_0_FEATURE = "Previous High Blood Sugar Levels"
 SMOKING_YEARS_FEATURE = "Smoking for how long"
+
+with st.expander("🔎 Debug: feature mapping", expanded=False):
+    st.write("Model folder:", RESOLVED_DIR)
+    st.write("FEATURES loaded:", isinstance(FEATURES, (list, tuple)) and len(FEATURES))
+    st.write("Schema features:", FEATURES)
+
+    friendly_list = [
+        "Age","Leukocytes","MCHC","Waist Circumference","APTT","QUICK",
+        "Potassium","MCH", YESNO_2_0_FEATURE, SMOKING_YEARS_FEATURE
+    ]
+    mapping = {fn: ALIASES.get(fn, fn) for fn in friendly_list}
+    st.write("Friendly → schema key:", mapping)
+
+    hidden = [fn for fn, schema in mapping.items() if schema not in set(FEATURES)]
+    if hidden:
+        st.warning(f"Hidden because not in schema: {hidden}")
+    else:
+        st.info("All friendly fields are present in the loaded schema.")
 
 # Friendly labels for UI
 LABELS = {
@@ -361,7 +377,16 @@ def help_with_range(name: str) -> str | None:
 
 
 def has_feat(friendly_name: str) -> bool:
-    return ALIASES.get(friendly_name, friendly_name) in FEATURES
+    # Render by default if FEATURES isn't ready/iterable yet
+    if "FEATURES" not in globals() or FEATURES is None:
+        return True
+    try:
+        keys = set(FEATURES)
+    except Exception:
+        return True
+    key = ALIASES.get(friendly_name, friendly_name)
+    return key in keys
+
 
 def key_for(friendly_name: str) -> str:
     return ALIASES.get(friendly_name, friendly_name)
