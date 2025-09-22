@@ -38,6 +38,16 @@ st.markdown(
         box-shadow: 0 10px 28px rgba(0,0,0,.18);
       }
 
+     .stApp {
+       background-color: #004994; /* brand blue */ }
+     .block-container {
+        background-color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+     }
+
+
       /* ===== Typography ===== */
       h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
       h1,h2 { letter-spacing:.2px; }
