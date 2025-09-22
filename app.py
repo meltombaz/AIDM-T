@@ -261,14 +261,14 @@ st.markdown("""
 
 st.markdown("""
 <style>
-/* Center the Get risk estimate button only */
-div[data-testid="stButton"] button[purpose="primary"] {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+.center-btn .stButton > button {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # ------------------ Branded header ------------------
@@ -557,8 +557,9 @@ if selected == "Home":
             inline_range_hint("MCH")
 
 
-    submit = st.button("Get risk estimate")
-
+    # Wrap your button in a container
+    st.markdown('<div class="center-btn">', unsafe_allow_html=True)
+    st.button("Get risk estimate", key="risk_button")
     st.markdown('</div>', unsafe_allow_html=True)  # close card
 
     # Prediction & display
