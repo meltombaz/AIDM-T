@@ -459,8 +459,8 @@ with st.container():
         default_index=0,
         styles={
             "container": {"background": "transparent", "padding": "0"},
-            "icon": {"color": "white", "font-size": "18px"},
-            "nav-link": {"color": "white", "font-size": "16px", "margin": "0px"},
+            "icon": {"color": "black", "font-size": "18px"},
+            "nav-link": {"color": "black", "font-size": "16px", "margin": "0px"},
             "nav-link-selected": {"background-color": "#006226"},
         },
     )
