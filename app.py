@@ -391,150 +391,182 @@ def has_feat(friendly_name: str) -> bool:
 def key_for(friendly_name: str) -> str:
     return ALIASES.get(friendly_name, friendly_name)
 
+tabs = st.tabs(["🏠 Home", "ℹ️ Info"])
 
-# ------------------ Input form ------------------
-st.markdown('<div class="card">', unsafe_allow_html=True)
-st.markdown("<h3>Patient values</h3>", unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
-inputs: dict[str, object] = {}
-
-with col1:
-    # Age
-    if has_feat("Age"):
-        inputs[key_for("Age")] = st.number_input(
-            label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
-        )
-
-    # Previous high blood sugar (radio -> no unit)
-    if has_feat(YESNO_2_0_FEATURE):
-        yn = st.radio(label_with_unit(YESNO_2_0_FEATURE), ["No", "Yes"], horizontal=True, index=0)
-        inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == "Yes" else 0
-
-    # Smoking history + years
-    if has_feat(SMOKING_YEARS_FEATURE):
-        status = st.radio(label_with_unit(SMOKING_YEARS_FEATURE),
-                          ["Non-smoker", "Ex-smoker", "Current smoker"], index=0)
-        if status == "Non-smoker":
-            st.markdown("<p style='color:#5b5e6a; font-size:.9rem;'>Years smoking: 0</p>", unsafe_allow_html=True)
-            inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
-        else:
-            years = st.number_input("Years smoking (years)", min_value=0, max_value=80, value=5, step=1)
-            inputs[key_for(SMOKING_YEARS_FEATURE)] = years
-
-    # Leukocytes
-# Leukocytes
-    if has_feat("Leukocytes"):
-        inputs[key_for("Leukocytes")] = st.number_input(
-            label_with_unit("Leukocytes"),
-            value=0.0, format="%.2f",
-            help=help_with_range("Leukocytes")  # keeps the hover tooltip
-    )
-        inline_range_hint("Leukocytes")        # always-visible hint under the field
-
-    # Waist circumference
-    if has_feat("Waist Circumference"):
-        inputs[key_for("Waist Circumference")] = st.number_input(
-            label_with_unit("Waist Circumference"),
-            value=0.0, format="%.1f",
-            help=help_with_range("Waist Circumference")
-    )
-        inline_range_hint("Waist Circumference")
-
-with col2:
-    # QUICK
-    if has_feat("QUICK"):
-        inputs[key_for("QUICK")] = st.number_input(
-            label_with_unit("QUICK"),
-            value=0.0, format="%.2f",
-            help=help_with_range("QUICK")
-    )
-        inline_range_hint("QUICK")
-
-# APTT
-    if has_feat("APTT"):
-        inputs[key_for("APTT")] = st.number_input(
-            label_with_unit("APTT"),
-            value=0.0, format="%.2f",
-            help=help_with_range("APTT")
-    )
-        inline_range_hint("APTT")
-
-    # Potassium
-    if has_feat("Potassium"):
-        inputs[key_for("Potassium")] = st.number_input(
-            label_with_unit("Potassium"),
-            value=0.0, format="%.2f",
-            help=help_with_range("Potassium")
-    )
-        inline_range_hint("Potassium")
-
-    # MCHC
-    if has_feat("MCHC"):
-        inputs[key_for("MCHC")] = st.number_input(
-            label_with_unit("MCHC"),
-            value=0.0, format="%.2f",
-            help=help_with_range("MCHC")
-    )
-        inline_range_hint("MCHC")
-
-    # MCH
-    if has_feat("MCH"):
-        inputs[key_for("MCH")] = st.number_input(
-            label_with_unit("MCH"),
-            value=0.0, format="%.2f",
-            help=help_with_range("MCH")
-    )
-        inline_range_hint("MCH")
-
-st.markdown('</div>', unsafe_allow_html=True)  # close card
-
-# new row for centered button
-c1, c2, c3 = st.columns([1,2,1])
-with c2:
-    submit = st.button("Get risk estimate")
-
-# ------------------ Prediction & display ------------------
-def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
-    """
-    Build a one-row DataFrame matching the model's schema.
-    All fields are attempted as numeric; non-parsable -> NaN.
-    """
-    row = {}
-    for feat in features:
-        v = inputs.get(feat, None)
-        if v is None or (isinstance(v, str) and v.strip() == ""):
-            row[feat] = np.nan
-            continue
-        # numeric coercion for this model (all 10 are numeric)
-        try:
-            fv = float(v)
-            row[feat] = int(fv) if fv.is_integer() else fv
-        except Exception:
-            row[feat] = np.nan
-    return pd.DataFrame([row]).reindex(columns=features)
-
-if submit:
-    x1 = _coerce_row(inputs, FEATURES)
-    try:
-        proba = float(pipe.predict_proba(x1)[0, 1])
-    except Exception:
-        st.error("Unable to calculate risk. Please review inputs.")
-        st.stop()
-
-    # Threshold badge
-    t = max(0.0, min(1.0, threshold))
-    label, cls = ("Low risk", "badge-low")
-    if proba >= t:
-        label, cls = ("High risk", "badge-high")
-    elif proba >= t * 0.75:
-        label, cls = ("Moderate risk", "badge-med")
-
+with tabs[0]:
+    # ------------------ Input form ------------------
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:1.1rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
-    st.markdown(f"<div class='badge {cls}'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("<h3>Patient values</h3>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    inputs: dict[str, object] = {}
+
+    with col1:
+        # Age
+        if has_feat("Age"):
+            inputs[key_for("Age")] = st.number_input(
+                label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
+            )
+
+        # Previous high blood sugar (radio -> no unit)
+        if has_feat(YESNO_2_0_FEATURE):
+            yn = st.radio(label_with_unit(YESNO_2_0_FEATURE), ["No", "Yes"], horizontal=True, index=0)
+            inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == "Yes" else 0
+
+        # Smoking history + years
+        if has_feat(SMOKING_YEARS_FEATURE):
+            status = st.radio(label_with_unit(SMOKING_YEARS_FEATURE),
+                            ["Non-smoker", "Ex-smoker", "Current smoker"], index=0)
+            if status == "Non-smoker":
+                st.markdown("<p style='color:#5b5e6a; font-size:.9rem;'>Years smoking: 0</p>", unsafe_allow_html=True)
+                inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
+            else:
+                years = st.number_input("Years smoking (years)", min_value=0, max_value=80, value=5, step=1)
+                inputs[key_for(SMOKING_YEARS_FEATURE)] = years
+
+        # Leukocytes
+        if has_feat("Leukocytes"):
+            inputs[key_for("Leukocytes")] = st.number_input(
+                label_with_unit("Leukocytes"),
+                value=0.0, format="%.2f",
+                help=help_with_range("Leukocytes")  # keeps the hover tooltip
+        )
+            inline_range_hint("Leukocytes")        # always-visible hint under the field
+
+        # Waist circumference
+        if has_feat("Waist Circumference"):
+            inputs[key_for("Waist Circumference")] = st.number_input(
+                label_with_unit("Waist Circumference"),
+                value=0.0, format="%.1f",
+                help=help_with_range("Waist Circumference")
+        )
+            inline_range_hint("Waist Circumference")
+
+    with col2:
+        # QUICK
+        if has_feat("QUICK"):
+            inputs[key_for("QUICK")] = st.number_input(
+                label_with_unit("QUICK"),
+                value=0.0, format="%.2f",
+                help=help_with_range("QUICK")
+        )
+            inline_range_hint("QUICK")
+
+    # APTT
+        if has_feat("APTT"):
+            inputs[key_for("APTT")] = st.number_input(
+                label_with_unit("APTT"),
+                value=0.0, format="%.2f",
+                help=help_with_range("APTT")
+        )
+            inline_range_hint("APTT")
+
+        # Potassium
+        if has_feat("Potassium"):
+            inputs[key_for("Potassium")] = st.number_input(
+                label_with_unit("Potassium"),
+                value=0.0, format="%.2f",
+                help=help_with_range("Potassium")
+        )
+            inline_range_hint("Potassium")
+
+        # MCHC
+        if has_feat("MCHC"):
+            inputs[key_for("MCHC")] = st.number_input(
+                label_with_unit("MCHC"),
+                value=0.0, format="%.2f",
+                help=help_with_range("MCHC")
+        )
+            inline_range_hint("MCHC")
+
+        # MCH
+        if has_feat("MCH"):
+            inputs[key_for("MCH")] = st.number_input(
+                label_with_unit("MCH"),
+                value=0.0, format="%.2f",
+                help=help_with_range("MCH")
+        )
+            inline_range_hint("MCH")
+
+    st.markdown('</div>', unsafe_allow_html=True)  # close card
+
+    # Button row (centered)
+    c1, c2, c3 = st.columns([1,2,1])
+    with c2:
+        submit = st.button("Get risk estimate")
+
+    st.markdown('</div>', unsafe_allow_html=True)  # close card
+
+    def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
+        """
+        Build a one-row DataFrame matching the model's schema.
+        All fields are attempted as numeric; non-parsable -> NaN.
+        """
+        row = {}
+        for feat in features:
+            v = inputs.get(feat, None)
+            if v is None or (isinstance(v, str) and v.strip() == ""):
+                row[feat] = np.nan
+                continue
+            # numeric coercion for this model (all 10 are numeric)
+            try:
+                fv = float(v)
+                row[feat] = int(fv) if fv.is_integer() else fv
+            except Exception:
+                row[feat] = np.nan
+        return pd.DataFrame([row]).reindex(columns=features)
+
+    if submit:
+        x1 = _coerce_row(inputs, FEATURES)
+        try:
+            proba = float(pipe.predict_proba(x1)[0, 1])
+        except Exception:
+            st.error("Unable to calculate risk. Please review inputs.")
+            st.stop()
+
+        # Threshold badge
+        t = max(0.0, min(1.0, threshold))
+        label, cls = ("Low risk", "badge-low")
+        if proba >= t:
+            label, cls = ("High risk", "badge-high")
+        elif proba >= t * 0.75:
+            label, cls = ("Moderate risk", "badge-med")
+
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:1.1rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
+        st.markdown(f"<div class='badge {cls}'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
+with tabs[1]:
+    st.markdown("<h3>About the Algorithm</h3>", unsafe_allow_html=True)
+    st.write("""
+    This risk prediction tool (AIDMT) was developed using anonymized trauma clinic data.
+    Multiple machine learning algorithms (e.g., Random Forest, Gradient Boosting, XGBoost, MLP)
+    were trained and evaluated with nested cross-validation. The final model uses a reduced set
+    of the most predictive features, selected by SHAP importance analysis.
+
+    **Important:** The tool is a decision-support system only and does not replace a clinical diagnosis.
+    """)
+
+    st.markdown("<h3>Example CSV Format</h3>", unsafe_allow_html=True)
+    example = pd.DataFrame({
+        "Age": [45, 62],
+        "Previous High Blood Sugar Levels": [0, 2],
+        "Smoking for how long": [0, 15],
+        "Leukocytes": [6.2, 9.1],
+        "MCHC": [34, 35],
+        "Waist Circumference": [95, 110],
+        "APTT": [27.1, 28.3],
+        "QUICK": [105, 92],
+        "Potassium": [4.2, 3.8],
+        "MCH": [29, 31],
+    })
+    st.dataframe(example)
+
+    st.caption("Values should follow the same units as indicated in the input form.")
+
 
 
 # ------------------ Batch CSV ------------------
