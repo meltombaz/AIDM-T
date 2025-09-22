@@ -30,6 +30,18 @@ def radio_yes_no_unknown(label, *, key):
     choice = st.radio(label, ["No", "Yes", "Unknown"], horizontal=True, key=key, index=0)
     return { "No": 0, "Yes": 2, "Unknown": None }[choice]
 
+# --- Inline range hint helper ---
+def inline_range_hint(name: str):
+    rr = REF_RANGES.get(name)
+    if not rr:
+        return
+    unit = UNITS.get(name, "")
+    st.markdown(
+        f"<div class='inline-hint'>Typical range: {rr} {unit}</div>",
+        unsafe_allow_html=True
+    )
+
+
 
 # ------------------ Page setup ------------------
 st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", layout="wide")
@@ -182,6 +194,12 @@ hr { border:0; height:1px; background:#eef0f4; }
 @media (max-width: 768px){
   .header-text h1{ font-size:1.5rem; }
 }
+            
+.inline-hint{
+  margin:.35rem 0 .1rem 0;
+  font-size:.9rem;
+  color:#5b5e6a !important;
+}
 
 /* ===== Footer ===== */
 .footer{ color:#78808b !important; font-size:.85rem; margin-top:1rem; }
@@ -289,7 +307,6 @@ except Exception as e:
     st.error(str(e))
     st.stop()
 
-
 # ------------------ Friendly labels & alias mapping ------------------
 YESNO_2_0_FEATURE = "Previous High Blood Sugar Levels"
 SMOKING_YEARS_FEATURE = "Smoking for how long"
@@ -323,17 +340,16 @@ ALIASES = {
     SMOKING_YEARS_FEATURE: SMOKING_YEARS_FEATURE,
 }
 
-# ------------------ Units, ranges, and helpers ------------------
 UNITS = {
     "Age": "years",
-    "Leukocytes": "10^3/uL",        # aka x10^9 cells/L
+    "Leukocytes": "10^3/µL",      # (aka 10^9/L)
     "MCHC": "g/dL",
     "Waist Circumference": "cm",
-    "APTT": "sec",
+    "APTT": "s",
     "QUICK": "%",
     "Potassium": "mmol/L",
     "MCH": "pg",
-    YESNO_2_0_FEATURE: None,        # radios: no unit
+    YESNO_2_0_FEATURE: None,
     SMOKING_YEARS_FEATURE: "years",
 }
 
