@@ -22,162 +22,68 @@ st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", 
 
 st.markdown("""
 <style>
-/* Force consistent light appearance (prevents OS dark mode from inverting things) */
-:root { color-scheme: light; }
-
-/* Hide Streamlit system header */
-header[data-testid="stHeader"] { display:none; }
-
-/* ===== Page background ===== */
-html, body, .stApp { background-color:#004994 !important; }
-
-/* ===== Central content card ===== */
-.block-container{
-  /* wider + responsive (fills screen without getting too wide) */
-  max-width:1200px;
-  width:min(1200px, 95vw);
-  margin:2rem auto;
-  padding:2rem 2.2rem;
-  background:#ffffff;
-  border-radius:18px;
-  box-shadow:0 10px 28px rgba(0,0,0,.18);
+/* ===== FIX: Safari-safe Radio-as-Tabs (Home / Info) ===== */
+.tab-radio [role="radiogroup"]{
+  display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
 }
 
-/* ===== Typography ===== */
-h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
-h1,h2 { letter-spacing:.2px; }
-a { color:#004994 !important; }
-hr { border:0; height:1px; background:#eef0f4; }
-
-/* ===== Inputs: text/number/textarea/select ===== */
-.stTextInput input,
-.stNumberInput input,
-.stTextArea textarea,
-.stSelectbox div[data-baseweb="select"] > div {
-  background:#f6f8fb !important;
-  color:#000 !important;
-  border:1px solid #cfd7e3 !important;
-  border-radius:12px !important;
-}
-.stNumberInput > div > div > input { padding:.7rem .9rem !important; }
-.stTextInput input::placeholder,
-.stTextArea textarea::placeholder { color:#6b7280 !important; }
-
-/* Number steppers (the +/- buttons) */
-[data-testid="stNumberInput"] button{
-  background:#0f1e2e !important;
-  color:#fff !important;
-  border:none !important;
-  box-shadow:none !important;
-  width:28px; height:28px; border-radius:8px !important;
-}
-[data-testid="stNumberInput"] button:hover{ filter:brightness(1.1); }
-
-/* Focus ring */
-.stTextInput input:focus,
-.stNumberInput input:focus,
-.stTextArea textarea:focus,
-.stSelectbox div[data-baseweb="select"] > div:focus{
-  outline:none !important;
-  border-color:#004994 !important;
-  box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
+/* pill container */
+.tab-radio [role="radio"]{
+  position:relative;
+  background:transparent;
+  border-radius:10px;
+  padding:.45rem .95rem;
+  border:1px solid rgba(255,255,255,.18);
+  cursor:pointer;
 }
 
-/* Radios / checkboxes */
-input[type="radio"], input[type="checkbox"] { accent-color:#004994 !important; }
-.stRadio > label, .stCheckbox > label { color:#000 !important; }
-
-/* Slider */
-div[data-baseweb="slider"] > div{ background:#e6ebf4 !important; } /* rail */
-div[data-baseweb="slider"] div[role="slider"]{
-  background:#004994 !important;
-  box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
+/* default (inactive) text — force on all descendants for Safari */
+.tab-radio [role="radio"], 
+.tab-radio [role="radio"] *{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;  /* Safari */
 }
-div[data-baseweb="slider"] div[role="slider"]:hover{ filter:brightness(1.06); }
 
-/* Buttons */
-.stButton > button, .stButton > button *{
-  display:flex !important; align-items:center !important; justify-content:center !important;
-  height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:700;
-  background:#56184a !important; color:#fff !important; border:none !important;
-  border-radius:12px !important; box-shadow:0 6px 14px rgba(86,24,74,.25);
+/* hover */
+.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+
+/* active pill */
+.tab-radio [role="radio"][aria-checked="true"]{
+  background:#006226 !important;
+  border-color:#006226 !important;
 }
-.stButton > button:hover{ filter:brightness(1.06); box-shadow:0 8px 18px rgba(86,24,74,.32); }
-.stButton > button:disabled{ background:#b9b9c2 !important; color:#f2f2f2 !important; box-shadow:none; }
 
-/* ===== Cards ===== */
-.card{ background:#ffffff; border:1px solid #eef0f4; border-radius:16px; padding:18px; }
-.card h3{ margin:0 0 .8rem 0; }
-
-/* ===== Badges / results ===== */
-.badge{ display:inline-block; padding:.25rem .6rem; border-radius:999px; font-size:.85rem; }
-.badge-low{ background:#e8f5e9; color:#256029; }
-.badge-med{ background:#fff8e1; color:#7a5c00; }
-.badge-high{ background:#ffebee; color:#b71c1c; }
-.risk-high{ color:#681c16 !important; }
-
-/* ===== Infobox ===== */
-.infobox{
-  display:flex; gap:.75rem; align-items:flex-start;
-  background:#f4f8ff; border:1px solid #cfd7e3; border-left:6px solid #004994;
-  border-radius:12px; padding:12px 14px; margin:0 0 1rem 0; color:#000 !important;
+/* active text — force again for Safari */
+.tab-radio [role="radio"][aria-checked="true"],
+.tab-radio [role="radio"][aria-checked="true"] *{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
 }
-.infobox .icon{
-  width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
-  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px;
+
+/* focus ring for keyboard users */
+.tab-radio [role="radio"]:focus-visible{
+  outline:3px solid rgba(0,73,148,.35);
+  outline-offset:2px;
 }
-.infobox h4{ margin:.1rem 0 .25rem 0; font-size:1rem; font-weight:700; }
-.infobox p{ margin:0; font-size:.95rem; }
 
-/* ===== Branded header ===== */
-.header-box{
-  background-color:#004994; border-radius:14px; padding:1rem 1.5rem; margin-bottom:.6rem;
-}
-.header-text h1{ color:#ffffff; font-size:2rem; font-weight:800; line-height:1.25; margin:0; }
-@media (max-width:768px){ .header-text h1{ font-size:1.5rem; } }
-
-/* ===== Inline hint & footer ===== */
-.inline-hint{ margin:.35rem 0 .1rem 0; font-size:.9rem; color:#5b5e6a !important; }
-.footer{ color:#78808b !important; font-size:.85rem; margin-top:1rem; }
-
-/* ===== Tabs ===== */
-/* Streamlit native tabs (st.tabs) – in case you use them elsewhere */
+/* Streamlit native tabs (if you use st.tabs elsewhere) — Safari-safe text */
 .stTabs [data-baseweb="tab-list"]{
   gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
 }
 .stTabs [data-baseweb="tab"]{
-  color:#ffffff !important; background:transparent; border-radius:10px;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  background:transparent; border-radius:10px;
   padding:.45rem .95rem; border:1px solid rgba(255,255,255,.18);
 }
 .stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
 .stTabs [aria-selected="true"]{
-  background:#006226 !important; color:#ffffff !important; border-color:#006226 !important;
+  background:#006226 !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  border-color:#006226 !important;
 }
 .stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
-
-/* streamlit-option-menu (if used) */
-.top-nav{ background:#004994; border-radius:12px; padding:.35rem .5rem; margin:.4rem 0 1rem 0; }
-.top-nav .nav-link{
-  color:#ffffff !important; font-weight:700; border-radius:10px; padding:.45rem .95rem;
-  border:1px solid rgba(255,255,255,.18);
-}
-.top-nav .nav-link:hover{ background:#003b7a !important; }
-.top-nav .nav-link.active{ background:#006226 !important; color:#ffffff !important; }
-
-/* Radio-as-tabs (your current Home/Info tabs) */
-.tab-radio [role="radiogroup"]{
-  display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
-}
-.tab-radio [role="radio"]{
-  background:transparent; border-radius:10px; padding:.45rem .95rem;
-  border:1px solid rgba(255,255,255,.18);
-}
-.tab-radio [role="radio"] p{ color:#ffffff !important; }                /* label text */
-.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
-.tab-radio [role="radio"][aria-checked="true"]{
-  background:#006226 !important; border-color:#006226 !important;
-}
-.tab-radio [role="radio"][aria-checked="true"] p{ color:#ffffff !important; } /* ensure not white-on-white */
 </style>
 """, unsafe_allow_html=True)
 
