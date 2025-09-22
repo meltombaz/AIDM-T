@@ -236,12 +236,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-
-st.markdown('<div class="tab-radio">', unsafe_allow_html=True)
-tab_choice = st.radio("", ["Home", "Info"], horizontal=True, label_visibility="collapsed")
-st.markdown('</div>', unsafe_allow_html=True)
-
-
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
