@@ -313,7 +313,7 @@ SMOKING_YEARS_FEATURE = "Smoking for how long"
 
 # Friendly labels for UI
 LABELS = {
-    "Age": "Age (years)",
+    "Age": "Age",
     YESNO_2_0_FEATURE: "Previous high blood sugar levels",
     "Leukocytes": "Leukocytes",
     "MCHC": "MCHC",
