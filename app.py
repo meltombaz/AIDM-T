@@ -530,7 +530,10 @@ if selected == "Home":
 
         if has_feat("Waist Circumference"):
             inputs[key_for("Waist Circumference")] = st.number_input(
-                label_with_unit("Waist Circumference"), value=0.0, format="%.1f",
+                label_with_unit("Waist Circumference"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.1f",
                 help=help_with_range("Waist Circumference")
             )
             inline_range_hint("Waist Circumference")
@@ -538,35 +541,50 @@ if selected == "Home":
     with col2:
         if has_feat("QUICK"):
             inputs[key_for("QUICK")] = st.number_input(
-                label_with_unit("QUICK"), value=0.0, format="%.2f",
+                label_with_unit("QUICK"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("QUICK")
             )
             inline_range_hint("QUICK")
 
         if has_feat("APTT"):
             inputs[key_for("APTT")] = st.number_input(
-                label_with_unit("APTT"), value=0.0, format="%.2f",
+                label_with_unit("APTT"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("APTT")
             )
             inline_range_hint("APTT")
 
         if has_feat("Potassium"):
             inputs[key_for("Potassium")] = st.number_input(
-                label_with_unit("Potassium"), value=0.0, format="%.2f",
+                label_with_unit("Potassium"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("Potassium")
             )
             inline_range_hint("Potassium")
 
         if has_feat("MCHC"):
             inputs[key_for("MCHC")] = st.number_input(
-                label_with_unit("MCHC"), value=0.0, format="%.2f",
+                label_with_unit("MCHC"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("MCHC")
             )
             inline_range_hint("MCHC")
 
         if has_feat("MCH"):
             inputs[key_for("MCH")] = st.number_input(
-                label_with_unit("MCH"), value=0.0, format="%.2f",
+                label_with_unit("MCH"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("MCH")
             )
             inline_range_hint("MCH")
