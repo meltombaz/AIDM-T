@@ -323,6 +323,43 @@ ALIASES = {
     SMOKING_YEARS_FEATURE: SMOKING_YEARS_FEATURE,
 }
 
+# ------------------ Units, ranges, and helpers ------------------
+UNITS = {
+    "Age": "years",
+    "Leukocytes": "10^3/uL",        # aka x10^9 cells/L
+    "MCHC": "g/dL",
+    "Waist Circumference": "cm",
+    "APTT": "sec",
+    "QUICK": "%",
+    "Potassium": "mmol/L",
+    "MCH": "pg",
+    YESNO_2_0_FEATURE: None,        # radios: no unit
+    SMOKING_YEARS_FEATURE: "years",
+}
+
+# Optional: soft plausibility ranges (used only for help text)
+REF_RANGES = {
+    "Leukocytes": "≈ 4.3–10.0",
+    "MCHC": "≈ 33–36",
+    "Waist Circumference": "adult ≈ 60–160",
+    "APTT": "≈ 21–29",
+    "QUICK": "≈ 70–120",
+    "Potassium": "≈ 3.5–5.1",
+    "MCH": "≈ 28–33",
+}
+
+def label_with_unit(name: str) -> str:
+    """Return the friendly label plus a unit tag if defined."""
+    base = LABELS.get(name, name)
+    unit = UNITS.get(name)
+    return f"{base} ({unit})" if unit else base
+
+def help_with_range(name: str) -> str | None:
+    """Optional: return a small hint with reference-ish range."""
+    rr = REF_RANGES.get(name)
+    return f"Typical range: {rr} {UNITS.get(name, '')}".strip() if rr else None
+
+
 def has_feat(friendly_name: str) -> bool:
     return ALIASES.get(friendly_name, friendly_name) in FEATURES
 
@@ -340,54 +377,69 @@ inputs: dict[str, object] = {}
 with col1:
     # Age
     if has_feat("Age"):
-        inputs[key_for("Age")] = st.number_input(LABELS["Age"], min_value=0, max_value=120, value=45, step=1)
+        inputs[key_for("Age")] = st.number_input(
+            label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
+        )
 
-    # Previous high blood sugar
+    # Previous high blood sugar (radio -> no unit)
     if has_feat(YESNO_2_0_FEATURE):
-        yn = st.radio(LABELS[YESNO_2_0_FEATURE], ["No", "Yes"], horizontal=True, index=0)
+        yn = st.radio(label_with_unit(YESNO_2_0_FEATURE), ["No", "Yes"], horizontal=True, index=0)
         inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == "Yes" else 0
 
     # Smoking history + years
     if has_feat(SMOKING_YEARS_FEATURE):
-        status = st.radio(LABELS[SMOKING_YEARS_FEATURE],
-                          ["Non-smoker", "Ex-smoker", "Current smoker"],
-                          index=0)
+        status = st.radio(label_with_unit(SMOKING_YEARS_FEATURE),
+                          ["Non-smoker", "Ex-smoker", "Current smoker"], index=0)
         if status == "Non-smoker":
-            # clearer than a disabled box
             st.markdown("<p style='color:#5b5e6a; font-size:.9rem;'>Years smoking: 0</p>", unsafe_allow_html=True)
             inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
         else:
-            years = st.number_input("Years smoking", min_value=0, max_value=80, value=5, step=1)
+            years = st.number_input("Years smoking (years)", min_value=0, max_value=80, value=5, step=1)
             inputs[key_for(SMOKING_YEARS_FEATURE)] = years
 
     # Leukocytes
     if has_feat("Leukocytes"):
-        inputs[key_for("Leukocytes")] = st.number_input(LABELS["Leukocytes"], value=0.0, format="%.2f")
+        inputs[key_for("Leukocytes")] = st.number_input(
+            label_with_unit("Leukocytes"), value=0.0, format="%.2f", help=help_with_range("Leukocytes")
+        )
 
     # Waist circumference
     if has_feat("Waist Circumference"):
-        inputs[key_for("Waist Circumference")] = st.number_input(LABELS["Waist Circumference"], value=0.0, format="%.1f")
+        inputs[key_for("Waist Circumference")] = st.number_input(
+            label_with_unit("Waist Circumference"), value=0.0, format="%.1f", help=help_with_range("Waist Circumference")
+        )
 
 with col2:
     # QUICK
     if has_feat("QUICK"):
-        inputs[key_for("QUICK")] = st.number_input(LABELS["QUICK"], value=0.0, format="%.2f")
+        inputs[key_for("QUICK")] = st.number_input(
+            label_with_unit("QUICK"), value=0.0, format="%.2f", help=help_with_range("QUICK")
+        )
 
     # APTT
     if has_feat("APTT"):
-        inputs[key_for("APTT")] = st.number_input(LABELS["APTT"], value=0.0, format="%.2f")
+        inputs[key_for("APTT")] = st.number_input(
+            label_with_unit("APTT"), value=0.0, format="%.2f", help=help_with_range("APTT")
+        )
 
     # Potassium
     if has_feat("Potassium"):
-        inputs[key_for("Potassium")] = st.number_input(LABELS["Potassium"], value=0.0, format="%.2f")
+        inputs[key_for("Potassium")] = st.number_input(
+            label_with_unit("Potassium"), value=0.0, format="%.2f", help=help_with_range("Potassium")
+        )
 
     # MCHC
     if has_feat("MCHC"):
-        inputs[key_for("MCHC")] = st.number_input(LABELS["MCHC"], value=0.0, format="%.2f")
+        inputs[key_for("MCHC")] = st.number_input(
+            label_with_unit("MCHC"), value=0.0, format="%.2f", help=help_with_range("MCHC")
+        )
 
     # MCH
     if has_feat("MCH"):
-        inputs[key_for("MCH")] = st.number_input(LABELS["MCH"], value=0.0, format="%.2f")
+        inputs[key_for("MCH")] = st.number_input(
+            label_with_unit("MCH"), value=0.0, format="%.2f", help=help_with_range("MCH")
+        )
+
 
 submit = st.button("Get risk estimate")
 st.markdown('</div>', unsafe_allow_html=True)  # close card
