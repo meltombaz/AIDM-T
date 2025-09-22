@@ -19,133 +19,222 @@ import joblib  # fallback
 
 # ------------------ Page setup ------------------
 st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", layout="wide")
+
+# Hide Streamlit system header (keeps only your branded header)
+st.markdown(
+    """
+    <style>
+      /* ===== Force consistent (light) app look ===== */
+      :root { color-scheme: light; }
+      header[data-testid="stHeader"] { display:none; }
+
+      /* ===== Page background ===== */
+      html, body, .stApp { background-color:#004994 !important; }
+
+      /* ===== Central content card ===== */
+      .block-container{
+        max-width:940px;
+        margin:2rem auto;
+        padding:2rem 2.2rem;
+        background:#ffffff;
+        border-radius:18px;
+        box-shadow:0 10px 28px rgba(0,0,0,.18);
+      }
+
+      /* ===== Typography ===== */
+      h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
+      h1,h2 { letter-spacing:.2px; }
+      a { color:#004994 !important; }
+      hr { border:0; height:1px; background:#eef0f4; }
+
+      /* ===== Inputs: text/number/textarea/select ===== */
+      .stTextInput input,
+      .stNumberInput input,
+      .stTextArea textarea,
+      .stSelectbox div[data-baseweb="select"] > div {
+        background:#f6f8fb !important;
+        color:#000 !important;
+        border:1px solid #cfd7e3 !important;
+        border-radius:12px !important;
+      }
+      .stNumberInput > div > div > input {
+        padding:.7rem .9rem !important;
+      }
+      .stTextInput input::placeholder,
+      .stTextArea textarea::placeholder { color:#6b7280 !important; }
+
+      /* Number steppers (the +/- buttons) */
+      [data-testid="stNumberInput"] button {
+        background:#0f1e2e !important;       /* dark so visible on light cards */
+        color:#fff !important;
+        border:none !important;
+        box-shadow:none !important;
+        width:28px; height:28px; border-radius:8px !important;
+      }
+      [data-testid="stNumberInput"] button:hover { filter:brightness(1.1); }
+
+      /* Focus ring */
+      .stTextInput input:focus,
+      .stNumberInput input:focus,
+      .stTextArea textarea:focus,
+      .stSelectbox div[data-baseweb="select"] > div:focus {
+        outline:none !important;
+        border-color:#004994 !important;
+        box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
+      }
+
+      /* Radios / checkboxes */
+      input[type="radio"], input[type="checkbox"] { accent-color:#004994 !important; }
+      .stRadio > label, .stCheckbox > label { color:#000 !important; }
+
+      /* Slider */
+      div[data-baseweb="slider"] > div {     /* rail */
+        background:#e6ebf4 !important;
+      }
+      div[data-baseweb="slider"] div[role="slider"] { /* handle */
+        background:#004994 !important;
+        box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
+      }
+      div[data-baseweb="slider"] div[role="slider"]:hover { filter:brightness(1.06); }
+
+      /* Buttons */
+      .stButton > button, .stButton > button * {
+        display:flex !important; align-items:center !important; justify-content:center !important;
+        height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:700;
+        background:#56184a !important; color:#fff !important; border:none !important;
+        border-radius:12px !important; box-shadow:0 6px 14px rgba(86,24,74,.25);
+      }
+      .stButton > button:hover { filter:brightness(1.06); box-shadow:0 8px 18px rgba(86,24,74,.32); }
+      .stButton > button:disabled { background:#b9b9c2 !important; color:#f2f2f2 !important; box-shadow:none; }
+
+      /* ===== Cards ===== */
+      .card{ background:#ffffff; border:1px solid #eef0f4; border-radius:16px; padding:18px; }
+      .card h3{ margin:0 0 .8rem 0; }
+
+      /* ===== Badges / results ===== */
+      .badge{ display:inline-block; padding:.25rem .6rem; border-radius:999px; font-size:.85rem; }
+      .badge-low{ background:#e8f5e9; color:#256029; }
+      .badge-med{ background:#fff8e1; color:#7a5c00; }
+      .badge-high{ background:#ffebee; color:#b71c1c; }
+      .risk-high{ color:#681c16 !important; }
+
+      /* ===== Infobox ===== */
+      .infobox{
+        display:flex; gap:.75rem; align-items:flex-start;
+        background:#f4f8ff; border:1px solid #cfd7e3; border-left:6px solid #004994;
+        border-radius:12px; padding:12px 14px; margin:0 0 1rem 0; color:#000 !important;
+      }
+      .infobox .icon{
+        width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
+        display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px;
+      }
+      .infobox h4{ margin:.1rem 0 .25rem 0; font-size:1rem; font-weight:700; }
+      .infobox p{ margin:0; font-size:.95rem; }
+
+      /* ===== Branded header ===== */
+      .header-box{
+        background-color:#004994;
+        border-radius:14px; padding:1rem 1.5rem; margin-bottom:.6rem;
+      }
+      .header-text h1{
+        color:#ffffff; font-size:2rem; font-weight:800; line-height:1.25; margin:0;
+      }
+      @media (max-width:768px){ .header-text h1{ font-size:1.5rem; } }
+
+      /* ===== Inline hint & footer ===== */
+      .inline-hint{ margin:.35rem 0 .1rem 0; font-size:.9rem; color:#5b5e6a !important; }
+      .footer{ color:#78808b !important; font-size:.85rem; margin-top:1rem; }
+
+      /* ===== Header NAV band (option_menu) ===== */
+      .top-nav { background:#004994; border-radius:12px; padding:.35rem .5rem; margin:.4rem 0 1rem 0; }
+      .top-nav .nav-link { color:#ffffff !important; font-weight:700; border-radius:10px; }
+      .top-nav .nav-link:hover { background:#003b7a !important; }
+      .top-nav .nav-link.active { background:#006226 !important; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.markdown("""
 <style>
-:root { color-scheme: light; }
-header[data-testid="stHeader"]{ display:none; }
-
-/* === Full-bleed page === */
-html, body, .stApp{ background:#004994 !important; }
-.block-container{
-  /* Full width, responsive gutters, no card */
-  max-width:none !important;
-  width:100% !important;
-  padding-left:clamp(12px, 3vw, 40px) !important;
-  padding-right:clamp(12px, 3vw, 40px) !important;
-  padding-top:24px !important; padding-bottom:56px !important;
-  background:transparent !important;
-  box-shadow:none !important; border-radius:0 !important;
-  margin:0 auto !important;
-}
-
-/* === Type & basics === */
-h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
-a{ color:#fff !important; text-decoration:underline; }
-hr{ border:0; height:1px; background:rgba(255,255,255,.25); }
-
-/* === Inputs (stay legible on blue) === */
-.stTextInput input,
-.stNumberInput input,
-.stTextArea textarea,
-.stSelectbox div[data-baseweb="select"] > div{
-  background:#f8fafc !important;
-  color:#000 !important;
-  border:1px solid #cfd7e3 !important;
-  border-radius:12px !important;
-}
-.stNumberInput > div > div > input{ padding:.7rem .9rem !important; }
-[data-testid="stNumberInput"] button{
-  background:#0f1e2e !important; color:#fff !important; border:none !important;
-  width:28px; height:28px; border-radius:8px !important;
-}
-.stTextInput input:focus,
-.stNumberInput input:focus,
-.stTextArea textarea:focus,
-.stSelectbox div[data-baseweb="select"] > div:focus{
-  outline:none !important; border-color:#004994 !important;
-  box-shadow:0 0 0 3px rgba(0,73,148,.18) !important;
-}
-input[type="radio"], input[type="checkbox"]{ accent-color:#004994 !important; }
-div[data-baseweb="slider"] > div{ background:#e6ebf4 !important; }
-div[data-baseweb="slider"] div[role="slider"]{
-  background:#004994 !important; box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
-}
-
-/* === Buttons === */
-.stButton > button, .stButton > button *{
-  display:flex !important; align-items:center !important; justify-content:center !important;
-  height:3.6rem; padding:0 1.8rem; font-size:1.1rem; font-weight:700;
-  background:#56184a !important; color:#fff !important; border:none !important;
-  border-radius:12px !important; box-shadow:0 6px 14px rgba(86,24,74,.25);
-}
-.stButton > button:hover{ filter:brightness(1.06); box-shadow:0 8px 18px rgba(86,24,74,.32); }
-
-/* === Header / infobox (still readable on blue) === */
-.header-box{ background:#004994; border-radius:14px; padding:1rem 1.25rem; margin:.25rem 0 1rem; }
-.header-text h1{ color:#fff; font-size:2rem; font-weight:800; line-height:1.25; margin:0; }
-@media (max-width:768px){ .header-text h1{ font-size:1.55rem; } }
-.infobox{
-  display:flex; gap:.75rem; align-items:flex-start;
-  background:#f4f8ff; border:1px solid #cfd7e3; border-left:6px solid #004994;
-  border-radius:12px; padding:12px 14px; margin:0 0 1rem 0; color:#000 !important;
-}
-.infobox .icon{
-  width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
-  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px;
-}
-
-/* === Radio-as-tabs: cross-browser, full width band === */
+/* ================================
+   CROSS-BROWSER RADIO-AS-TABS FIX
+   ================================ */
 .tab-radio [role="radiogroup"]{
-  display:flex; gap:.5rem; background:#003a7a;    /* slightly darker blue band so it pops */
-  padding:.4rem; border-radius:12px; margin:.35rem 0 1rem 0;
+  display:flex; gap:.5rem;
+  background:#004994;               /* blue band */
+  padding:.35rem; border-radius:12px;
 }
+
+/* Pill container */
 .tab-radio [role="radio"]{
   position:relative; cursor:pointer;
-  background:transparent; border-radius:10px; padding:.5rem 1rem;
-  border:1px solid rgba(255,255,255,.18); -webkit-tap-highlight-color:transparent;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px; padding:.45rem .95rem;
+  -webkit-tap-highlight-color: transparent;
 }
-/* inactive text -> force on all descendants */
-.tab-radio [role="radio"],
-.tab-radio [role="radio"] *,
+
+/* Inactive pill text – FORCE on all descendants (Chrome/Safari/Firefox) */
+.tab-radio [role="radio"], 
+.tab-radio [role="radio"] *, 
 .tab-radio [role="radio"] [data-testid="stMarkdownContainer"] p,
-.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span{
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span {
   color:#ffffff !important;
-  -webkit-text-fill-color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important; /* Safari */
 }
-.tab-radio [role="radio"]:hover{ background:#002e62 !important; }
-/* active pill */
+
+/* Hover */
+.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+
+/* Active pill */
 .tab-radio [role="radio"][aria-checked="true"]{
   background:#006226 !important; border-color:#006226 !important;
 }
+
+/* Active pill text – FORCE again */
 .tab-radio [role="radio"][aria-checked="true"],
 .tab-radio [role="radio"][aria-checked="true"] *,
 .tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] p,
-.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span{
-  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
 }
-.tab-radio [role="radio"]:focus-visible{ outline:3px solid rgba(255,255,255,.45); outline-offset:2px; }
 
-/* === If you also use st.tabs() elsewhere, match look === */
-.stTabs [data-baseweb="tab-list"]{ gap:.5rem; background:#003a7a; padding:.4rem; border-radius:12px; }
+/* Keyboard focus */
+.tab-radio [role="radio"]:focus-visible{
+  outline:3px solid rgba(0,73,148,.35); outline-offset:2px;
+}
+
+/* ---------- If you also use st.tabs anywhere ---------- */
+.stTabs [data-baseweb="tab-list"]{
+  gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
+}
 .stTabs [data-baseweb="tab"],
 .stTabs [data-baseweb="tab"] *,
-.stTabs [data-baseweb="tab"] [data-testid="stMarkdownContainer"] p{
-  color:#fff !important; -webkit-text-fill-color:#fff !important;
-  background:transparent; border-radius:10px; padding:.5rem 1rem;
+.stTabs [data-baseweb="tab"] [data-testid="stMarkdownContainer"] p {
+  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
+  background:transparent; border-radius:10px; padding:.45rem .95rem;
   border:1px solid rgba(255,255,255,.18);
 }
-.stTabs [data-baseweb="tab"]:hover{ background:#002e62 !important; }
-.stTabs [aria-selected="true"], .stTabs [aria-selected="true"] *{
-  background:#006226 !important; color:#fff !important; -webkit-text-fill-color:#fff !important;
+.stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
+.stTabs [aria-selected="true"],
+.stTabs [aria-selected="true"] *{
+  background:#006226 !important; color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
   border-color:#006226 !important;
 }
 .stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
 
-/* === Small helpers (optional) === */
-.risk-high{ color:#681c16 !important; }
-.white-card{ background:#fff; border:1px solid #eef0f4; border-radius:16px; padding:18px; } /* use if you want any local card */
+/* ================================
+   WIDER LAYOUT (fills more width)
+   ================================ */
+.block-container{
+  max-width:1280px;                 /* widen from 1200 */
+  width:min(1280px, 96vw);          /* fill screen on large displays */
+}
 </style>
 """, unsafe_allow_html=True)
+
 
 
 
