@@ -461,7 +461,7 @@ with st.container():
             "container": {"background": "transparent", "padding": "0"},
             "icon": {"color": "black", "font-size": "18px"},
             "nav-link": {"color": "black", "font-size": "16px", "margin": "0px"},
-            "nav-link-selected": {"background-color": "#006226"},
+            "nav-link-selected": {"background-color": "#d3d3d3"},
         },
     )
     st.markdown('</div>', unsafe_allow_html=True)
