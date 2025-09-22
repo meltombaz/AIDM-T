@@ -155,6 +155,87 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.markdown("""
+<style>
+/* ================================
+   CROSS-BROWSER RADIO-AS-TABS FIX
+   ================================ */
+.tab-radio [role="radiogroup"]{
+  display:flex; gap:.5rem;
+  background:#004994;               /* blue band */
+  padding:.35rem; border-radius:12px;
+}
+
+/* Pill container */
+.tab-radio [role="radio"]{
+  position:relative; cursor:pointer;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px; padding:.45rem .95rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Inactive pill text – FORCE on all descendants (Chrome/Safari/Firefox) */
+.tab-radio [role="radio"], 
+.tab-radio [role="radio"] *, 
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important; /* Safari */
+}
+
+/* Hover */
+.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+
+/* Active pill */
+.tab-radio [role="radio"][aria-checked="true"]{
+  background:#006226 !important; border-color:#006226 !important;
+}
+
+/* Active pill text – FORCE again */
+.tab-radio [role="radio"][aria-checked="true"],
+.tab-radio [role="radio"][aria-checked="true"] *,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+/* Keyboard focus */
+.tab-radio [role="radio"]:focus-visible{
+  outline:3px solid rgba(0,73,148,.35); outline-offset:2px;
+}
+
+/* ---------- If you also use st.tabs anywhere ---------- */
+.stTabs [data-baseweb="tab-list"]{
+  gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
+}
+.stTabs [data-baseweb="tab"],
+.stTabs [data-baseweb="tab"] *,
+.stTabs [data-baseweb="tab"] [data-testid="stMarkdownContainer"] p {
+  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
+  background:transparent; border-radius:10px; padding:.45rem .95rem;
+  border:1px solid rgba(255,255,255,.18);
+}
+.stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
+.stTabs [aria-selected="true"],
+.stTabs [aria-selected="true"] *{
+  background:#006226 !important; color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
+  border-color:#006226 !important;
+}
+.stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
+
+/* ================================
+   WIDER LAYOUT (fills more width)
+   ================================ */
+.block-container{
+  max-width:1280px;                 /* widen from 1200 */
+  width:min(1280px, 96vw);          /* fill screen on large displays */
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 
 
 
