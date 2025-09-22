@@ -423,10 +423,14 @@ with col1:
             inputs[key_for(SMOKING_YEARS_FEATURE)] = years
 
     # Leukocytes
+# Leukocytes
     if has_feat("Leukocytes"):
         inputs[key_for("Leukocytes")] = st.number_input(
-            label_with_unit("Leukocytes"), value=0.0, format="%.2f", help=help_with_range("Leukocytes")
-        )
+            label_with_unit("Leukocytes"),
+            value=0.0, format="%.2f",
+            help=help_with_range("Leukocytes")  # keeps the hover tooltip
+    )
+    inline_range_hint("Leukocytes")        # always-visible hint under the field
 
     # Waist circumference
     if has_feat("Waist Circumference"):
