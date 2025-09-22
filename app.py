@@ -195,7 +195,7 @@ st.markdown('<div class="header-box">', unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("appLogo2.png", width=250)  # adjust as you like (90–140 works well)
+    st.image("appLogo2.png", width=150)  # adjust as you like (90–140 works well)
 with col2:
     st.markdown(
         """
