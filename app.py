@@ -272,12 +272,12 @@ div[data-testid="stButton"] button[purpose="primary"] {
 
 st.markdown("""
 <style>
-/* Import Merriweather from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+/* Import Roboto Slab from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap');
 
 /* Apply globally */
 html, body, [class*="css"]  {
-    font-family: 'Merriweather', serif !important;
+    font-family: 'Roboto Slab', serif !important;
 }
 </style>
 """, unsafe_allow_html=True)
