@@ -487,10 +487,12 @@ with col2:
     )
         inline_range_hint("MCH")
 
-
-submit = st.button("Get risk estimate")
 st.markdown('</div>', unsafe_allow_html=True)  # close card
 
+# new row for centered button
+c1, c2, c3 = st.columns([1,2,1])
+with c2:
+    submit = st.button("Get risk estimate")
 
 # ------------------ Prediction & display ------------------
 def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
