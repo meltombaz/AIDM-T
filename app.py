@@ -236,6 +236,30 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+st.markdown("""
+<style>
+/* === Tabs text: black + bold === */
+.tab-radio [role="radio"],
+.tab-radio [role="radio"] *,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  font-weight:700 !important;
+}
+.tab-radio [role="radio"][aria-checked="true"],
+.tab-radio [role="radio"][aria-checked="true"] *,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  font-weight:700 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
