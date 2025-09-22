@@ -430,7 +430,7 @@ with col1:
             value=0.0, format="%.2f",
             help=help_with_range("Leukocytes")  # keeps the hover tooltip
     )
-    inline_range_hint("Leukocytes")        # always-visible hint under the field
+        inline_range_hint("Leukocytes")        # always-visible hint under the field
 
     # Waist circumference
     if has_feat("Waist Circumference"):
@@ -439,20 +439,26 @@ with col1:
             value=0.0, format="%.1f",
             help=help_with_range("Waist Circumference")
     )
-    inline_range_hint("Waist Circumference")
+        inline_range_hint("Waist Circumference")
 
 with col2:
     # QUICK
     if has_feat("QUICK"):
         inputs[key_for("QUICK")] = st.number_input(
-            label_with_unit("QUICK"), value=0.0, format="%.2f", help=help_with_range("QUICK")
-        )
+            label_with_unit("QUICK"),
+            value=0.0, format="%.2f",
+            help=help_with_range("QUICK")
+    )
+        inline_range_hint("QUICK")
 
-    # APTT
+# APTT
     if has_feat("APTT"):
         inputs[key_for("APTT")] = st.number_input(
-            label_with_unit("APTT"), value=0.0, format="%.2f", help=help_with_range("APTT")
-        )
+            label_with_unit("APTT"),
+            value=0.0, format="%.2f",
+            help=help_with_range("APTT")
+    )
+        inline_range_hint("APTT")
 
     # Potassium
     if has_feat("Potassium"):
