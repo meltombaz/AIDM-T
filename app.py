@@ -463,20 +463,29 @@ with col2:
     # Potassium
     if has_feat("Potassium"):
         inputs[key_for("Potassium")] = st.number_input(
-            label_with_unit("Potassium"), value=0.0, format="%.2f", help=help_with_range("Potassium")
-        )
+            label_with_unit("Potassium"),
+            value=0.0, format="%.2f",
+            help=help_with_range("Potassium")
+    )
+        inline_range_hint("Potassium")
 
     # MCHC
     if has_feat("MCHC"):
         inputs[key_for("MCHC")] = st.number_input(
-            label_with_unit("MCHC"), value=0.0, format="%.2f", help=help_with_range("MCHC")
-        )
+            label_with_unit("MCHC"),
+            value=0.0, format="%.2f",
+            help=help_with_range("MCHC")
+    )
+        inline_range_hint("MCHC")
 
     # MCH
     if has_feat("MCH"):
         inputs[key_for("MCH")] = st.number_input(
-            label_with_unit("MCH"), value=0.0, format="%.2f", help=help_with_range("MCH")
-        )
+            label_with_unit("MCH"),
+            value=0.0, format="%.2f",
+            help=help_with_range("MCH")
+    )
+        inline_range_hint("MCH")
 
 
 submit = st.button("Get risk estimate")
