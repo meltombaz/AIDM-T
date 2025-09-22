@@ -24,50 +24,78 @@ st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", 
 st.markdown(
     """
     <style>
-      header[data-testid="stHeader"] {display: none;}
+      /* ===== Force consistent (light) app look ===== */
+      :root { color-scheme: light; }
+      header[data-testid="stHeader"] { display:none; }
+
       /* ===== Page background ===== */
-      .stApp { background-color:#004994; }
+      html, body, .stApp { background-color:#004994 !important; }
 
       /* ===== Central content card ===== */
       .block-container{
-        max-width: 940px;
-        margin: 2rem auto;
-        padding: 2rem 2.2rem;
-        background:#fff;
-        border-radius: 18px;
-        box-shadow: 0 10px 28px rgba(0,0,0,.18);
+        max-width:940px;
+        margin:2rem auto;
+        padding:2rem 2.2rem;
+        background:#ffffff;
+        border-radius:18px;
+        box-shadow:0 10px 28px rgba(0,0,0,.18);
       }
-
-     .stApp {
-       background-color: #004994; /* brand blue */ }
-     .block-container {
-        background-color: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-     }
-
 
       /* ===== Typography ===== */
       h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
       h1,h2 { letter-spacing:.2px; }
+      a { color:#004994 !important; }
       hr { border:0; height:1px; background:#eef0f4; }
 
-      /* ===== Inputs ===== */
-      .stTextInput input, .stNumberInput input, .stTextArea textarea {
-        background:#f6f8fb !important; color:#000 !important;
-        border:1px solid #cfd7e3 !important; border-radius:12px !important;
+      /* ===== Inputs: text/number/textarea/select ===== */
+      .stTextInput input,
+      .stNumberInput input,
+      .stTextArea textarea,
+      .stSelectbox div[data-baseweb="select"] > div {
+        background:#f6f8fb !important;
+        color:#000 !important;
+        border:1px solid #cfd7e3 !important;
+        border-radius:12px !important;
       }
-      .stNumberInput > div > div > input { padding:.7rem .9rem !important; }
-      .stTextInput input:focus, .stNumberInput input:focus, .stTextArea textarea:focus {
-        outline:none !important; border-color:#004994 !important;
+      .stNumberInput > div > div > input {
+        padding:.7rem .9rem !important;
+      }
+      .stTextInput input::placeholder,
+      .stTextArea textarea::placeholder { color:#6b7280 !important; }
+
+      /* Number steppers (the +/- buttons) */
+      [data-testid="stNumberInput"] button {
+        background:#0f1e2e !important;       /* dark so visible on light cards */
+        color:#fff !important;
+        border:none !important;
+        box-shadow:none !important;
+        width:28px; height:28px; border-radius:8px !important;
+      }
+      [data-testid="stNumberInput"] button:hover { filter:brightness(1.1); }
+
+      /* Focus ring */
+      .stTextInput input:focus,
+      .stNumberInput input:focus,
+      .stTextArea textarea:focus,
+      .stSelectbox div[data-baseweb="select"] > div:focus {
+        outline:none !important;
+        border-color:#004994 !important;
         box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
       }
 
-      /* Radios/checkboxes */
+      /* Radios / checkboxes */
+      input[type="radio"], input[type="checkbox"] { accent-color:#004994 !important; }
       .stRadio > label, .stCheckbox > label { color:#000 !important; }
-      .stRadio div[role="radio"]{ border:2px solid #004994 !important; }
-      .stRadio div[aria-checked="true"]{ background:#004994 !important; }
+
+      /* Slider */
+      div[data-baseweb="slider"] > div {     /* rail */
+        background:#e6ebf4 !important;
+      }
+      div[data-baseweb="slider"] div[role="slider"] { /* handle */
+        background:#004994 !important;
+        box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
+      }
+      div[data-baseweb="slider"] div[role="slider"]:hover { filter:brightness(1.06); }
 
       /* Buttons */
       .stButton > button, .stButton > button * {
@@ -96,24 +124,25 @@ st.markdown(
         background:#f4f8ff; border:1px solid #cfd7e3; border-left:6px solid #004994;
         border-radius:12px; padding:12px 14px; margin:0 0 1rem 0; color:#000 !important;
       }
-      .infobox .icon{ width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
-        display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px; }
+      .infobox .icon{
+        width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
+        display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px;
+      }
       .infobox h4{ margin:.1rem 0 .25rem 0; font-size:1rem; font-weight:700; }
       .infobox p{ margin:0; font-size:.95rem; }
 
       /* ===== Branded header ===== */
       .header-box{
-        background-color:#004994; border-radius:14px; padding:1rem 1.5rem; margin-bottom:0.6rem;
+        background-color:#004994;
+        border-radius:14px; padding:1rem 1.5rem; margin-bottom:.6rem;
       }
       .header-text h1{
         color:#ffffff; font-size:2rem; font-weight:800; line-height:1.25; margin:0;
       }
-      @media (max-width: 768px){ .header-text h1{ font-size:1.5rem; } }
+      @media (max-width:768px){ .header-text h1{ font-size:1.5rem; } }
 
-      /* ===== Inline hint ===== */
+      /* ===== Inline hint & footer ===== */
       .inline-hint{ margin:.35rem 0 .1rem 0; font-size:.9rem; color:#5b5e6a !important; }
-
-      /* ===== Footer ===== */
       .footer{ color:#78808b !important; font-size:.85rem; margin-top:1rem; }
 
       /* ===== Header NAV band (option_menu) ===== */
@@ -125,6 +154,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
