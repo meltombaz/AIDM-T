@@ -458,10 +458,10 @@ with st.container():
         orientation="horizontal",
         default_index=0,
         styles={
-            "container": {"background-color": "black", "padding": "0"},
+            "container": {"background-color": "#d3d3d3", "padding": "0"},
             "icon": {"color": "white", "font-size": "18px"},
             "nav-link": {"color": "white", "font-size": "16px", "margin": "0px"},
-            "nav-link-selected": {"background-color": "#d3d3d3"},
+            "nav-link-selected": {"background-color": "green"},
         },
     )
     st.markdown('</div>', unsafe_allow_html=True)
