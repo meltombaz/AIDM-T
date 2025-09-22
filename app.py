@@ -100,7 +100,7 @@ st.markdown(
       /* Buttons */
       .stButton > button, .stButton > button * {
         display:flex !important; align-items:center !important; justify-content:center !important;
-        height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:500;
+        height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:700;
         background:#56184a !important; color:#fff !important; border:none !important;
         border-radius:12px !important; box-shadow:0 6px 14px rgba(86,24,74,.25);
       }
@@ -547,7 +547,7 @@ if selected == "Home":
 
     # Button row (centered, spans both columns)
     c1, c2, c3 = st.columns([1, 2, 1])
-    with c3:
+    with c2:
         submit = st.button("Get risk estimate")
 
     st.markdown('</div>', unsafe_allow_html=True)  # close card
