@@ -435,8 +435,11 @@ with col1:
     # Waist circumference
     if has_feat("Waist Circumference"):
         inputs[key_for("Waist Circumference")] = st.number_input(
-            label_with_unit("Waist Circumference"), value=0.0, format="%.1f", help=help_with_range("Waist Circumference")
-        )
+            label_with_unit("Waist Circumference"),
+            value=0.0, format="%.1f",
+            help=help_with_range("Waist Circumference")
+    )
+    inline_range_hint("Waist Circumference")
 
 with col2:
     # QUICK
