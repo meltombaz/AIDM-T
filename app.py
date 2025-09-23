@@ -406,7 +406,7 @@ st.markdown("""
 <style>
 /* Reduce top padding to shrink white gap under the language dropdown */
 .block-container {
-    padding-top: 0rem !important;   /* default is ~6rem */
+    padding-top: 0.1rem !important;   /* default is ~6rem */
 }
 </style>
 """, unsafe_allow_html=True)
@@ -427,23 +427,36 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
-col1, col2 = st.columns([1, 5])
+c_logo, c_title, c_lang = st.columns([1.2, 5, 1.4])
 
-with col1:
-    st.image("appLogo2.png", width=150)
+with c_logo:
+    st.image("appLogo2.png", width=120)
 
-with col2:
+with c_title:
     st.markdown(
         f"""
         <div class="header-text">
-        <h1>{t('title')}</h1>
+          <h1>{t('title')}</h1>
         </div>
         """,
         unsafe_allow_html=True
     )
 
+with c_lang:
+    st.markdown('<div class="lang-picker">', unsafe_allow_html=True)
+    choice = st.selectbox(
+        "Language / Sprache",
+        ["🇬🇧 English", "🇩🇪 Deutsch"],
+        index=0 if st.session_state.lang == "en" else 1,
+        label_visibility="collapsed",
+        key="lang_select"
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.session_state.lang = "en" if "English" in choice else "de"
+LANG = st.session_state.lang
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 # ------------------ About box ------------------
