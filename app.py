@@ -751,14 +751,14 @@ elif selected == "Info":
             "Multiple machine learning algorithms (e.g., Random Forest, Gradient Boosting, XGBoost, MLP) "
             "were trained and evaluated with nested cross-validation. "
             "The final model uses a reduced set of the most predictive features, selected by SHAP importance analysis.\n\n"
-            "**Important:** The tool is a decision-support system only and does not replace a clinical diagnosis."
+            "**Disclaimer:** The tool is a decision-support system only and **does not** replace a clinical diagnosis."
         ),
         "de": (
             "Dieses Risikovorhersagetool (AIDMT) wurde mit anonymisierten Traumaklinikdaten entwickelt. "
             "Mehrere maschinelle Lernalgorithmen (z. B. Random Forest, Gradient Boosting, XGBoost, MLP) "
             "wurden mittels verschachtelter Kreuzvalidierung trainiert und evaluiert. "
             "Das Endmodell verwendet eine reduzierte Menge der prädiktivsten Merkmale, ausgewählt durch SHAP-Analyse.\n\n"
-            "**Wichtig:** Das Tool dient ausschließlich als Entscheidungsunterstützungssystem und ersetzt keine klinische Diagnose."
+            "**Haftungsausschluss:** Das Tool dient ausschließlich als Entscheidungsunterstützungssystem und ersetzt **keine** klinische Diagnose."
         ),}[LANG])
 
 
