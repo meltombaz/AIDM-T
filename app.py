@@ -232,7 +232,7 @@ st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
 
 with col1:
-    st.image("appLogo2.png", width=150)
+    st.image("background.png", width=150)
 
 with col2:
     st.markdown(
