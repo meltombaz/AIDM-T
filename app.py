@@ -69,7 +69,7 @@ st.markdown(
         color:#fff !important;
         border:none !important;
         box-shadow:none !important;
-        width:30px; height:30px; border-radius:8px !important;
+        width:40px; height:40px; border-radius:8px !important;
       }
       [data-testid="stNumberInput"] button:hover { filter:brightness(1.1); }
 
