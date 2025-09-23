@@ -685,19 +685,19 @@ if selected == "Home":
             st.error("Unable to calculate risk. Please review inputs.")
             st.stop()
 
-        t = max(0.0, min(1.0, threshold))
-        label, cls = ("Low risk", "badge-low")
-        if proba >= t:
-            label, cls = ("High risk", "badge-high")
-        elif proba >= t * 0.75:
-            label, cls = ("Moderate risk", "badge-med")
+
+        thr = max(0.0, min(1.0, threshold))
+        label, cls = (t("low"), "badge-low")
+        if proba >= thr:
+            label, cls = (t("high"), "badge-high")
+        elif proba >= thr * 0.75:
+            label, cls = (t("med"), "badge-med")
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown(f"<h3>{t('result')}</h3>", unsafe_allow_html=True)
         st.markdown(f"<p style='font-size:1.4rem;margin:.2rem 0;'>{t('est_prob')}</p>", unsafe_allow_html=True)
         st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
         st.markdown(f"<p class='notice'>{t('host_notice')}</p>", unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
