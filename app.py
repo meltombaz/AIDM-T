@@ -131,7 +131,7 @@ st.markdown(
         border-radius:12px !important;
       }
       .stNumberInput > div > div > input {
-        padding:1.5rem .9rem !important;
+        padding:.7rem .9rem !important;
       }
       .stTextInput input::placeholder,
       .stTextArea textarea::placeholder { color:#6b7280 !important; }
@@ -398,6 +398,15 @@ st.markdown("""
 }
 .footer a:hover {
     color: #dbeafe;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* Reduce top padding to shrink white gap under the language dropdown */
+.block-container {
+    padding-top: 1rem !important;   /* default is ~6rem */
 }
 </style>
 """, unsafe_allow_html=True)
