@@ -717,6 +717,30 @@ elif selected == "Info":
     st.dataframe(example)
     st.caption("Values should follow the same units as indicated in the input form.")
 
+
+    st.markdown(
+    """
+    <div class="infobox">
+        <div class="icon">📧</div>
+        <div>
+            <h4>Contact Us</h4>
+            <p>
+            For questions or feedback regarding this tool, you can reach me directly at
+            <a href="mailto:mlktombaz@gmail.com">mlktombaz@gmail.com</a>.
+            </p>
+            <p>
+            Alternatively, visit our
+            <a href="https://www.bg-kliniken.de/klinik-tuebingen/ueber-uns/unsere-einrichtungen/siegfried-weller-institut/"
+               target="_blank">institute page</a>
+            or connect with us on
+            <a href="https://www.linkedin.com/company/siegfried-weller-institute-for-trauma-research/"
+               target="_blank">LinkedIn</a>.
+            </p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
     # Admin lives here now (no more above-tabs)
     with st.expander("⚙️ Admin", expanded=False):
         st.text_input(
