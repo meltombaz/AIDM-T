@@ -283,6 +283,29 @@ html, body, [class*="css"]  {
 """, unsafe_allow_html=True)
 
 
+st.markdown("""
+<style>
+.footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+.footer a {
+    color: #ffffff;
+    text-decoration: underline;
+    margin: 0 10px;
+}
+.footer a:hover {
+    color: #dbeafe;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # ------------------ Branded header ------------------
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
@@ -695,4 +718,15 @@ elif selected == "Info":
         st.caption(f"Active model folder: {RESOLVED_DIR}")
 
 # ------------------ Footer ------------------
-st.markdown('<div class="footer">AIDMT — For decision support and research use only.</div>', unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class="footer">
+        <p>
+        🔗 <a href="https://www.bg-kliniken.de/klinik-tuebingen/ueber-uns/unsere-einrichtungen/siegfried-weller-institut/" target="_blank">Siegfried Weller Institut</a> 
+        | <a href="https://www.linkedin.com/company/siegfried-weller-institute-for-trauma-research/posts/?feedView=all" target="_blank">LinkedIn</a>
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
