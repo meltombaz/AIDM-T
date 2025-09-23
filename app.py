@@ -46,6 +46,13 @@ T = {
         "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
         "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
     },
+    "host_notice": {
+    "en": ("This application is provided as a free, research-oriented tool. "
+           "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
+           "We appreciate your understanding."),
+    "de": ("Diese frei gehostete, forschungsorientierte App kann aufgrund von Hosting-Beschränkungen "
+           "gelegentlich langsam reagieren oder abstürzen. Vielen Dank für Ihr Verständnis."),},
+
 }
 
 def t(key: str) -> str:
