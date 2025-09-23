@@ -637,7 +637,7 @@ if selected == "Home":
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size:2.1rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:1.4rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
         st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
