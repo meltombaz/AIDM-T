@@ -540,7 +540,7 @@ ALIASES = {
 
 UNITS = {
     "Age": "years",
-    "Leukocytes": "10<sup>3</sup>/µL",  # (aka 10^9/L)
+    "Leukocytes": "10^3/µL",  # (aka 10^9/L)
     "MCHC": "g/dL",
     "Waist Circumference": "cm",
     "APTT": "s",
