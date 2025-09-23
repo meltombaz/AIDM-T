@@ -558,7 +558,6 @@ if selected == "Home":
                 format="%.1f",
                 help=help_with_range("Waist Circumference")
             )
-            inline_range_hint("Waist Circumference")
 
     with col2:
         if has_feat("QUICK"):
@@ -569,7 +568,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("QUICK")
             )
-            inline_range_hint("QUICK")
 
         if has_feat("APTT"):
             inputs[key_for("APTT")] = st.number_input(
@@ -579,7 +577,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("APTT")
             )
-            inline_range_hint("APTT")
 
         if has_feat("Potassium"):
             inputs[key_for("Potassium")] = st.number_input(
@@ -589,7 +586,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("Potassium")
             )
-            inline_range_hint("Potassium")
 
         if has_feat("MCHC"):
             inputs[key_for("MCHC")] = st.number_input(
@@ -599,7 +595,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("MCHC")
             )
-            inline_range_hint("MCHC")
 
         if has_feat("MCH"):
             inputs[key_for("MCH")] = st.number_input(
@@ -609,7 +604,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("MCH")
             )
-            inline_range_hint("MCH")
 
     # Button row (centered, spans both columns)
     c1, c2, c3 = st.columns([1, 1, 1])
