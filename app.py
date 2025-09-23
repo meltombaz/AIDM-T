@@ -406,7 +406,7 @@ st.markdown("""
 <style>
 /* Reduce top padding to shrink white gap under the language dropdown */
 .block-container {
-    padding-top: 0.5rem !important;   /* default is ~6rem */
+    padding-top: 0rem !important;   /* default is ~6rem */
 }
 </style>
 """, unsafe_allow_html=True)
