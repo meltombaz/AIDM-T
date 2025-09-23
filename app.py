@@ -595,18 +595,30 @@ if selected == "Home":
                 label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
             )
 
+        # Previous high blood sugar (YES/NO)
         if has_feat(YESNO_2_0_FEATURE):
-            yn = st.radio(label_with_unit(YESNO_2_0_FEATURE), ["No", "Yes"], horizontal=True, index=0)
-            inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == "Yes" else 0
+            yn = st.radio(
+                t("YESNO_2_0_FEATURE"),
+                [t("no"), t("yes")],
+                horizontal=True, index=0
+            )
+            inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == t("yes") else 0
 
+        # Smoking status
         if has_feat(SMOKING_YEARS_FEATURE):
-            status = st.radio(label_with_unit(SMOKING_YEARS_FEATURE),
-                              ["Non-smoker", "Ex-smoker", "Current smoker"], index=0)
-            if status == "Non-smoker":
-                st.markdown("<p style='color:#5b5e6a; font-size:.9rem;'>Years smoking: 0</p>", unsafe_allow_html=True)
+            status = st.radio(
+                t("SMOKING_YEARS_FEATURE"),
+                [t("non_smoker"), t("ex_smoker"), t("curr_smoker")],
+                index=0
+            )
+            if status == t("non_smoker"):
+                st.markdown(f"<p class='inline-hint'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
             else:
-                years = st.number_input("Years smoking (years)", min_value=0, max_value=80, value=5, step=1)
+                years = st.number_input(
+                    "Years smoking (years)" if LANG == "en" else "Rauchjahre (Jahre)",
+                    min_value=0, max_value=80, value=5, step=1
+                )
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = years
 
         if has_feat("Leukocytes"):
