@@ -708,6 +708,7 @@ if selected == "Home":
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
+    # Batch CSV stays on Home
     with st.expander(t("batch")):
         st.write(
             "Upload a CSV with the same column names as the model schema. "
@@ -728,11 +729,15 @@ if selected == "Home":
                     df[c] = pd.to_numeric(df[c], errors="coerce")
 
                 if YESNO_2_0_FEATURE in df.columns:
-                    df[YESNO_2_0_FEATURE] = df[YESNO_2_0_FEATURE].replace({"Yes": 2, "No": 0})
+                    df[YESNO_2_0_FEATURE] = df[YESNO_2_0_FEATURE].replace(
+                        {"Yes": 2, "No": 0} if LANG == "en" else {"Ja": 2, "Nein": 0}
+                    )
                     df[YESNO_2_0_FEATURE] = pd.to_numeric(df[YESNO_2_0_FEATURE], errors="coerce")
 
                 if SMOKING_YEARS_FEATURE in df.columns:
-                    df[SMOKING_YEARS_FEATURE] = df[SMOKING_YEARS_FEATURE].replace({"Non-smoker": 0})
+                    df[SMOKING_YEARS_FEATURE] = df[SMOKING_YEARS_FEATURE].replace(
+                        {"Non-smoker": 0} if LANG == "en" else {"Nichtraucher:in": 0}
+                    )
                     df[SMOKING_YEARS_FEATURE] = pd.to_numeric(df[SMOKING_YEARS_FEATURE], errors="coerce")
 
                 preds = pipe.predict_proba(df)[:, 1]
@@ -744,9 +749,15 @@ if selected == "Home":
                     t("download"),
                     out.to_csv(index=False).encode("utf-8"),
                     "aidmt_predictions.csv",
-                    "text/csv")
+                    "text/csv"
+                )
             except Exception:
-                st.error("Could not score the file. Please check the columns and values.")
+                st.error(
+                    "Could not score the file. Please check the columns and values."
+                    if LANG == "en" else
+                    "Die Datei konnte nicht ausgewertet werden. Bitte überprüfen Sie Spalten und Werte."
+                )
+
 
 elif selected == "Info":
     st.markdown(f"<h3>{t('about_algo')}</h3>", unsafe_allow_html=True)
