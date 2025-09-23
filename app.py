@@ -331,7 +331,7 @@ st.markdown(
       <div>
         <h4>About AIDMT</h4>
         <p>
-          AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians.”
+          AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians.
         </p>
       </div>
     </div>
