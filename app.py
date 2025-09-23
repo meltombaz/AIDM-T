@@ -24,6 +24,34 @@ with col_lang:
     st.session_state.lang = "en" if choice == "English" else "de"
 LANG = st.session_state.lang
 
+# --- Translation dictionary ---
+T = {
+    "title": {
+        "en": "AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics",
+        "de": "KI-gestütztes Tool zur Diabetesrisikovorhersage für Unfallkliniken",
+    },
+    "patient_values": {"en": "Patient values", "de": "Patientenwerte"},
+    "get_estimate": {"en": "Get risk estimate", "de": "Risikowert berechnen"},
+    "result": {"en": "Result", "de": "Ergebnis"},
+    "est_prob": {"en": "Estimated probability:", "de": "Geschätzte Wahrscheinlichkeit:"},
+    "low": {"en": "Low risk", "de": "Niedriges Risiko"},
+    "med": {"en": "Moderate risk", "de": "Mittleres Risiko"},
+    "high": {"en": "High risk", "de": "Hohes Risiko"},
+    "batch": {"en": "📄 Batch scoring (optional)", "de": "📄 Stapelauswertung (optional)"},
+    "upload_csv": {"en": "Upload CSV", "de": "CSV hochladen"},
+    "download": {"en": "Download results", "de": "Ergebnisse herunterladen"},
+    "about_algo": {"en": "About the Algorithm", "de": "Über den Algorithmus"},
+    "contact_us": {"en": "Contact Us", "de": "Kontakt"},
+    "contact_text": {
+        "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
+        "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
+    },
+}
+
+def t(key: str) -> str:
+    return T.get(key, {}).get(LANG, key)
+
+
 # Hide Streamlit system header (keeps only your branded header)
 st.markdown(
     """
