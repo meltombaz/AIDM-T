@@ -321,20 +321,17 @@ st.markdown("""
 
 
 # ------------------ Branded header ------------------
-st.markdown('<div class="header-box">', unsafe_allow_html=True)
-col1, col2 = st.columns([1, 5])
-with col1:
-    st.image("appLogo2.png", width=150)
-with col2:
-    st.markdown(
-        """
-        <div class="header-text">
-          <h1>AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics</h1>
+st.markdown("""
+    <div class="header-box" style="display: flex; align-items: center; gap: 1.5rem;">
+        <div class="header-logo">
+            <img src="appLogo2.png" style="width:120px;"/>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-st.markdown('</div>', unsafe_allow_html=True)
+        <div class="header-text">
+            <h1>AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics</h1>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
 
 # ------------------ About box ------------------
 st.markdown(
