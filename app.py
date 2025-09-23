@@ -17,6 +17,9 @@ except Exception:
 import joblib  # fallback
 
 
+
+
+
 # ------------------ Page setup ------------------
 st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", layout="wide")
 
@@ -69,7 +72,7 @@ st.markdown(
         color:#fff !important;
         border:none !important;
         box-shadow:none !important;
-        width:28px; height:28px; border-radius:8px !important;
+        width:37px; height:37px; border-radius:10px !important;
       }
       [data-testid="stNumberInput"] button:hover { filter:brightness(1.1); }
 
@@ -157,76 +160,201 @@ st.markdown(
 
 st.markdown("""
 <style>
-/* ===== Streamlit native tabs (st.tabs) ===== */
-.stTabs [data-baseweb="tab-list"]{
-  gap:.5rem;
-  background:#004994;               /* band */
-  padding:.35rem;
-  border-radius:12px;
-}
-.stTabs [data-baseweb="tab"]{
-  color:#ffffff !important;          /* default text on blue band */
-  background:transparent;
-  border-radius:10px;
-  padding:.45rem .95rem;
-  border:1px solid rgba(255,255,255,.18);
-}
-.stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
-.stTabs [aria-selected="true"]{
-  background:#006226 !important;     /* active pill */
-  color:#ffffff !important;
-  border-color:#006226 !important;
-}
-/* kill BaseWeb highlight bar */
-.stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
-
-/* ===== streamlit-option-menu (fallback) ===== */
-.top-nav{
-  background:#004994; border-radius:12px; padding:.35rem .5rem; margin:.4rem 0 1rem 0;
-}
-.top-nav .nav-link{
-  color:#ffffff !important; font-weight:700; border-radius:10px; padding:.45rem .95rem;
-  border:1px solid rgba(255,255,255,.18);
-}
-.top-nav .nav-link:hover{ background:#003b7a !important; }
-.top-nav .nav-link.active{ background:#006226 !important; color:#ffffff !important; }
-
-/* ===== Radio-as-tabs (if you used a horizontal radio) ===== */
+/* ================================
+   CROSS-BROWSER RADIO-AS-TABS FIX
+   ================================ */
 .tab-radio [role="radiogroup"]{
-  display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
+  display:flex; gap:.5rem;
+  background:#004994;               /* blue band */
+  padding:.35rem; border-radius:12px;
 }
+
+/* Pill container */
 .tab-radio [role="radio"]{
+  position:relative; cursor:pointer;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px; padding:.45rem .95rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Inactive pill text – FORCE on all descendants (Chrome/Safari/Firefox) */
+.tab-radio [role="radio"], 
+.tab-radio [role="radio"] *, 
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important; /* Safari */
+}
+            
+.notice {
+    font-size: 0.85rem;
+    color: #5b5e6a;
+    font-style: italic;
+    margin-top: 0.8rem;
+}
+
+/* Hover */
+.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+
+/* Active pill */
+.tab-radio [role="radio"][aria-checked="true"]{
+  background:#006226 !important; border-color:#006226 !important;
+}
+
+/* Active pill text – FORCE again */
+.tab-radio [role="radio"][aria-checked="true"],
+.tab-radio [role="radio"][aria-checked="true"] *,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+
+.badge-result {
+    font-size: 1.4rem !important;
+    padding: .6rem 1.2rem !important;
+}      
+
+/* Keyboard focus */
+.tab-radio [role="radio"]:focus-visible{
+  outline:3px solid rgba(0,73,148,.35); outline-offset:2px;
+}
+
+/* ---------- If you also use st.tabs anywhere ---------- */
+.stTabs [data-baseweb="tab-list"]{
+  gap:.5rem; background:#004994; padding:.35rem; border-radius:12px;
+}
+.stTabs [data-baseweb="tab"],
+.stTabs [data-baseweb="tab"] *,
+.stTabs [data-baseweb="tab"] [data-testid="stMarkdownContainer"] p {
+  color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
   background:transparent; border-radius:10px; padding:.45rem .95rem;
   border:1px solid rgba(255,255,255,.18);
 }
-.tab-radio [role="radio"] p{ color:#ffffff !important; }           /* radio label text */
-.tab-radio [aria-checked="true"]{ background:#006226 !important; border-color:#006226 !important; }
-.tab-radio [role="radio"]:hover{ background:#003b7a !important; }
+.stTabs [data-baseweb="tab"]:hover{ background:#003b7a !important; }
+.stTabs [aria-selected="true"],
+.stTabs [aria-selected="true"] *{
+  background:#006226 !important; color:#ffffff !important; -webkit-text-fill-color:#ffffff !important;
+  border-color:#006226 !important;
+}
+.stTabs [data-baseweb="tab-highlight"]{ background:transparent !important; }
+
+/* ================================
+   WIDER LAYOUT (fills more width)
+   ================================ */
+.block-container{
+  max-width:1280px;                 /* widen from 1200 */
+  width:min(1280px, 96vw);          /* fill screen on large displays */
+}
 </style>
 """, unsafe_allow_html=True)
 
 
-st.markdown('<div class="tab-radio">', unsafe_allow_html=True)
-tab = st.radio("", ["Home","Info"], horizontal=True, label_visibility="collapsed")
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* === Tabs text: black + bold === */
+.tab-radio [role="radio"],
+.tab-radio [role="radio"] *,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"] [data-testid="stMarkdownContainer"] span{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  font-weight:700 !important;
+}
+.tab-radio [role="radio"][aria-checked="true"],
+.tab-radio [role="radio"][aria-checked="true"] *,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] p,
+.tab-radio [role="radio"][aria-checked="true"] [data-testid="stMarkdownContainer"] span{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  font-weight:700 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
+
+st.markdown("""
+<style>
+/* Center the Get risk estimate button only */
+div[data-testid="stButton"] button[purpose="primary"] {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* Import Roboto Slab from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap');
+
+/* Apply globally */
+html, body, [class*="css"]  {
+    font-family: 'Roboto Slab', serif !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<style>
+.footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+.footer a {
+    color: #ffffff;
+    text-decoration: underline;
+    margin: 0 10px;
+}
+.footer a:hover {
+    color: #dbeafe;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 # ------------------ Branded header ------------------
+st.markdown("""
+    <style>
+    .header-box .stColumn > div {
+        display: flex;
+        align-items: center;   /* vertical center */
+    }
+    .header-text h1 {
+        margin: 0;
+        line-height: 3.5;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
+
 with col1:
     st.image("appLogo2.png", width=150)
+
 with col2:
     st.markdown(
         """
         <div class="header-text">
-          <h1>AI-based Diabetes Mellitus<br>Prediction Tool for Trauma Clinics</h1>
+          <h1>AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics</h1>
         </div>
         """,
         unsafe_allow_html=True
     )
+
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 # ------------------ About box ------------------
 st.markdown(
@@ -236,16 +364,13 @@ st.markdown(
       <div>
         <h4>About AIDMT</h4>
         <p>
-          AIDMT is designed for <strong>trauma clinics</strong> to estimate the risk of
-          <strong>prediabetes and diabetes</strong> using routine data. It is a decision-support tool and
-          <strong>not an official diagnosis</strong>. Results should be interpreted by qualified clinicians.
+          AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians.
         </p>
       </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
-st.markdown('<div class="aidmt-sub">Enter values to estimate pre-/diabetes risk.</div>', unsafe_allow_html=True)
 
 # ------------------ Session defaults for Admin settings ------------------
 if "mdl_dir_in" not in st.session_state:
@@ -410,10 +535,10 @@ with st.container():
         orientation="horizontal",
         default_index=0,
         styles={
-            "container": {"background": "transparent", "padding": "0"},
+            "container": {"background-color": "#d3d3d3", "padding": "0"},
             "icon": {"color": "white", "font-size": "18px"},
             "nav-link": {"color": "white", "font-size": "16px", "margin": "0px"},
-            "nav-link-selected": {"background-color": "#006226"},
+            "nav-link-selected": {"background-color": "green"},
         },
     )
     st.markdown('</div>', unsafe_allow_html=True)
@@ -422,7 +547,8 @@ with st.container():
 if selected == "Home":
     # ------------------ Input form ------------------
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h3>Patient values</h3>", unsafe_allow_html=True)
+    st.markdown("<h3>Patient values</h3>", unsafe_allow_html=True) 
+
 
     col1, col2 = st.columns(2)
     inputs: dict[str, object] = {}
@@ -449,56 +575,71 @@ if selected == "Home":
 
         if has_feat("Leukocytes"):
             inputs[key_for("Leukocytes")] = st.number_input(
-                label_with_unit("Leukocytes"), value=0.0, format="%.2f",
+                label_with_unit("Leukocytes"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("Leukocytes")
             )
-            inline_range_hint("Leukocytes")
+
 
         if has_feat("Waist Circumference"):
             inputs[key_for("Waist Circumference")] = st.number_input(
-                label_with_unit("Waist Circumference"), value=0.0, format="%.1f",
+                label_with_unit("Waist Circumference"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.1f",
                 help=help_with_range("Waist Circumference")
             )
-            inline_range_hint("Waist Circumference")
 
     with col2:
         if has_feat("QUICK"):
             inputs[key_for("QUICK")] = st.number_input(
-                label_with_unit("QUICK"), value=0.0, format="%.2f",
+                label_with_unit("QUICK"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("QUICK")
             )
-            inline_range_hint("QUICK")
 
         if has_feat("APTT"):
             inputs[key_for("APTT")] = st.number_input(
-                label_with_unit("APTT"), value=0.0, format="%.2f",
+                label_with_unit("APTT"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("APTT")
             )
-            inline_range_hint("APTT")
 
         if has_feat("Potassium"):
             inputs[key_for("Potassium")] = st.number_input(
-                label_with_unit("Potassium"), value=0.0, format="%.2f",
+                label_with_unit("Potassium"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("Potassium")
             )
-            inline_range_hint("Potassium")
 
         if has_feat("MCHC"):
             inputs[key_for("MCHC")] = st.number_input(
-                label_with_unit("MCHC"), value=0.0, format="%.2f",
+                label_with_unit("MCHC"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("MCHC")
             )
-            inline_range_hint("MCHC")
 
         if has_feat("MCH"):
             inputs[key_for("MCH")] = st.number_input(
-                label_with_unit("MCH"), value=0.0, format="%.2f",
+                label_with_unit("MCH"),
+                min_value=0.0,                 # 🚫 no negatives
+                value=0.0,
+                format="%.2f",
                 help=help_with_range("MCH")
             )
-            inline_range_hint("MCH")
 
     # Button row (centered, spans both columns)
-    c1, c2, c3 = st.columns([1, 2, 1])
+    c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
         submit = st.button("Get risk estimate")
 
@@ -523,8 +664,12 @@ if selected == "Home":
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size:1.1rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
-        st.markdown(f"<div class='badge {cls}'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:1.4rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
+        st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
+        st.markdown("<p class='notice'>This application is provided as a free, research-oriented tool. "
+                    "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
+                    "We appreciate your understanding.</p>",
+                    unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
@@ -572,7 +717,7 @@ elif selected == "Info":
         were trained and evaluated with nested cross-validation. The final model uses a reduced set
         of the most predictive features, selected by SHAP importance analysis.
 
-        **Important:** The tool is a decision-support system only and does not replace a clinical diagnosis.
+        **Disclaimer:** The tool is a decision-support system only and does not replace a clinical diagnosis!
         """
     )
 
@@ -591,18 +736,22 @@ elif selected == "Info":
     })
     st.dataframe(example)
     st.caption("Values should follow the same units as indicated in the input form.")
+
+
     st.markdown(
-        f"""
-        <div class=\"infobox\">
-            <div class=\"icon\">📧</div>
-            <div>
-                <h4>{t('contact_us')}</h4>
-                <p>{t('contact_text')}</p>
-            </div>
+    """
+    <div class="infobox">
+        <div class="icon">📧</div>
+        <div>
+            <h4>Contact Us</h4>
+            <p>
+            For questions or feedback regarding this tool, you can reach me directly at
+            <a href="mailto:mlktombaz@gmail.com">mlktombaz@gmail.com</a>.
+            </p>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
+
 
     # Admin lives here now (no more above-tabs)
     with st.expander("⚙️ Admin", expanded=False):
@@ -615,4 +764,15 @@ elif selected == "Info":
         st.caption(f"Active model folder: {RESOLVED_DIR}")
 
 # ------------------ Footer ------------------
-st.markdown('<div class="footer">AIDMT — For decision support and research use only.</div>', unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class="footer">
+        <p>
+        🔗 <a href="https://www.bg-kliniken.de/klinik-tuebingen/ueber-uns/unsere-einrichtungen/siegfried-weller-institut/" target="_blank">Siegfried Weller Institut</a> 
+        | <a href="https://www.linkedin.com/company/siegfried-weller-institute-for-trauma-research/posts/?feedView=all" target="_blank">LinkedIn</a>
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
