@@ -16,11 +16,17 @@ except Exception:
     HAS_SKOPS = False
 import joblib  # fallback
 
-# --- Language state ---
-if "lang" not in st.session_state:
-    st.session_state.lang = "en"  # "en" or "de"
+# Must come FIRST — before any st.columns, st.selectbox, etc.
+st.set_page_config(
+    page_title="AIDMT — Pre-/Diabetes Risk",
+    page_icon="🩺",
+    layout="wide"
+)
 
-# Language switcher in the top-right
+# Now you can safely put the language switcher here ↓
+if "lang" not in st.session_state:
+    st.session_state.lang = "en"
+
 _, col_lang = st.columns([6, 1])
 with col_lang:
     choice = st.selectbox("Language / Sprache", ["English", "Deutsch"],
