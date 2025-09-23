@@ -548,7 +548,6 @@ if selected == "Home":
                 format="%.2f",
                 help=help_with_range("Leukocytes")
             )
-            inline_range_hint("Leukocytes")
 
 
         if has_feat("Waist Circumference"):
