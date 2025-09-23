@@ -53,12 +53,25 @@ T = {
     "ex_smoker": {"en": "Ex-smoker", "de": "Ehemalige/r Raucher/in"},
     "curr_smoker": {"en": "Current smoker", "de": "Aktuelle/r Raucher/in"},
     "years_smoking_0": {"en": "Years smoking: 0", "de": "Rauchjahre: 0"},
+    "about_aidmt": {"en": "About AIDMT", "de": "Über AIDMT"},
     "host_notice": {
     "en": ("This application is provided as a free, research-oriented tool. "
            "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
            "We appreciate your understanding."),
     "de": ("Diese frei gehostete, forschungsorientierte App kann aufgrund von Hosting-Beschränkungen "
            "gelegentlich langsam reagieren oder abstürzen. Vielen Dank für Ihr Verständnis."),},
+    "about_text": {
+    "en": (
+        "AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool "
+        "to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. "
+        "It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians."
+    ),
+    "de": (
+        "AIDMT ist für den Einsatz in <strong>Traumakliniken</strong> als Entscheidungsunterstützung gedacht, "
+        "um das Risiko für <strong>Prädiabetes und Diabetes</strong> auf Grundlage routinemäßig erhobener Daten zu schätzen. "
+        "Es stellt keine definitive Diagnose dar, und alle Ergebnisse sollten von qualifizierten Kliniker:innen interpretiert werden."
+    ),
+},
 
 }
 
@@ -402,14 +415,12 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # ------------------ About box ------------------
 st.markdown(
-    """
+    f"""
     <div class="infobox">
       <div class="icon">i</div>
       <div>
-        <h4>About AIDMT</h4>
-        <p>
-          AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians.
-        </p>
+        <h4>{t('about_aidmt')}</h4>
+        <p>{t('about_text')}</p>
       </div>
     </div>
     """,
