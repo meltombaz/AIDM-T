@@ -412,19 +412,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ------------------ Branded header ------------------
-st.markdown("""
-    <style>
-    .header-box .stColumn > div {
-        display: flex;
-        align-items: center;   /* vertical center */
-    }
-    .header-text h1 {
-        margin: 0;
-        line-height: 3.5;
-    }
-    </style>
-""", unsafe_allow_html=True)
+
 
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
