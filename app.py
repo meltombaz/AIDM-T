@@ -212,26 +212,42 @@ hr, .stMarkdown hr, div[role="separator"], .stDivider{ display:none !important; 
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <style>
-    /* Use your uploaded logo as repeating background */
-    .stApp {
-        background-color: #004994 !important;   /* fallback blue */
-        background-image: "background.png"s;
-        background-repeat: repeat;
-        background-size: 120px;   /* adjust logo size */
-        background-position: center;
-    }
+# Put this near the top (after st.set_page_config)
+import base64, pathlib
 
-    /* Keep the white content card clear */
-    .block-container {
-        background: #ffffff !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# path to your logo
+logo_path = pathlib.Path("background.png")
+b64 = base64.b64encode(logo_path.read_bytes()).decode()
+
+st.markdown(f"""
+<style>
+/* Brand blue base */
+html, body, .stApp {{ background:#004994 !important; }}
+
+/* Watermark layer that tiles everywhere */
+.stApp {{
+  position: relative;              /* anchor the pseudo-element */
+}}
+.stApp:before {{
+  content: "";
+  position: fixed;                 /* cover entire viewport */
+  inset: 0;
+  background-image: url('data:image/png;base64,{b64}');
+  background-repeat: repeat;       /* tile */
+  background-size: 140px;          /* logo size (adjust) */
+  opacity: .06;                    /* fade strength (0–1) */
+  pointer-events: none;            /* don’t block clicks */
+  z-index: 0;                      /* behind content */
+}}
+
+/* Ensure your content renders above the watermark */
+.stApp > * {{ position: relative; z-index: 1; }}
+
+/* Keep the central card clean and opaque */
+.block-container {{ background:#fff !important; }}
+</style>
+""", unsafe_allow_html=True)
+
 
 
 
