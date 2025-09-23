@@ -183,6 +183,13 @@ st.markdown("""
   color:#ffffff !important;
   -webkit-text-fill-color:#ffffff !important; /* Safari */
 }
+            
+.notice {
+    font-size: 0.85rem;
+    color: #5b5e6a;
+    font-style: italic;
+    margin-top: 0.8rem;
+}
 
 /* Hover */
 .tab-radio [role="radio"]:hover{ background:#003b7a !important; }
@@ -639,6 +646,10 @@ if selected == "Home":
         st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
         st.markdown("<p style='font-size:1.4rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
         st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
+        st.markdown("<p class='notice'>This application is provided as a free, research-oriented tool. "
+                    "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
+                    "We appreciate your understanding.</p>",
+                    unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
