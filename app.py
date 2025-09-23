@@ -200,12 +200,12 @@ st.markdown("""
   color:#ffffff !important;
   -webkit-text-fill-color:#ffffff !important;
 }
-            
-.badge {
-    font-size: 1.2rem !important;   /* bigger text */
-    padding: .5rem 1rem !important; /* more padding */
-}
-            
+
+
+.badge-result {
+    font-size: 1.4rem !important;
+    padding: .6rem 1.2rem !important;
+}      
 
 /* Keyboard focus */
 .tab-radio [role="radio"]:focus-visible{
@@ -638,7 +638,7 @@ if selected == "Home":
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
         st.markdown("<p style='font-size:2.1rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
-        st.markdown(f"<div class='badge {cls}'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
