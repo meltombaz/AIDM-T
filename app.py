@@ -55,7 +55,7 @@ st.markdown(
         background:#f6f8fb !important;
         color:#000 !important;
         border:1px solid #cfd7e3 !important;
-        border-radius:5px !important;
+        border-radius:12px !important;
       }
       .stNumberInput > div > div > input {
         padding:.7rem .9rem !important;
@@ -69,7 +69,7 @@ st.markdown(
         color:#fff !important;
         border:none !important;
         box-shadow:none !important;
-        width:28px; height:28px; border-radius:8px !important;
+        width:30px; height:30px; border-radius:8px !important;
       }
       [data-testid="stNumberInput"] button:hover { filter:brightness(1.1); }
 
