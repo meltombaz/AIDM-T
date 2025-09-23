@@ -693,13 +693,11 @@ if selected == "Home":
             label, cls = ("Moderate risk", "badge-med")
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("<h3>Result</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='font-size:1.4rem;margin:.2rem 0;'>Estimated probability:</p>", unsafe_allow_html=True)
+        st.markdown(f"<h3>{t('result')}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:1.4rem;margin:.2rem 0;'>{t('est_prob')}</p>", unsafe_allow_html=True)
         st.markdown(f"<div class='badge {cls} badge-result'><b>{proba*100:.1f}%</b> &nbsp;•&nbsp; {label}</div>", unsafe_allow_html=True)
-        st.markdown("<p class='notice'>This application is provided as a free, research-oriented tool. "
-                    "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
-                    "We appreciate your understanding.</p>",
-                    unsafe_allow_html=True)
+        st.markdown(f"<p class='notice'>{t('host_notice')}</p>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
