@@ -212,6 +212,27 @@ hr, .stMarkdown hr, div[role="separator"], .stDivider{ display:none !important; 
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown(
+    """
+    <style>
+    /* Use your uploaded logo as repeating background */
+    .stApp {
+        background-color: #004994 !important;   /* fallback blue */
+        background-image: url("background.png");
+        background-repeat: repeat;
+        background-size: 120px;   /* adjust logo size */
+        background-position: center;
+    }
+
+    /* Keep the white content card clear */
+    .block-container {
+        background: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 
 # ------------------ Branded header ------------------
