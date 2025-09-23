@@ -338,7 +338,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.markdown('<div class="aidmt-sub">Enter values to estimate pre-/diabetes risk.</div>', unsafe_allow_html=True)
 
 # ------------------ Session defaults for Admin settings ------------------
 if "mdl_dir_in" not in st.session_state:
@@ -516,6 +515,7 @@ if selected == "Home":
     # ------------------ Input form ------------------
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("<h3>Patient values</h3>", unsafe_allow_html=True)
+    st.markdown('<div class="aidmt-sub">Enter values to estimate pre-/diabetes risk.</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     inputs: dict[str, object] = {}
