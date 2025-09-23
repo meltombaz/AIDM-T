@@ -17,15 +17,13 @@ st.set_page_config(
 if "lang" not in st.session_state:
     st.session_state.lang = "en"
 # Language switcher in the top-right
-_, col_lang = st.columns([6, 1])
-with col_lang:
-    choice = st.selectbox(
-        "Language / Sprache",
-        ["🇬🇧 English", "🇩🇪 Deutsch"],   # with flags
-        index=0 if st.session_state.lang == "en" else 1,
-        label_visibility="collapsed"
-    )
-    st.session_state.lang = "en" if "English" in choice else "de"
+col_en, col_de = st.columns([1,1])
+with col_en:
+    if st.button("🇬🇧 English", use_container_width=True):
+        st.session_state.lang = "en"
+with col_de:
+    if st.button("🇩🇪 Deutsch", use_container_width=True):
+        st.session_state.lang = "de"
 LANG = st.session_state.lang
 
 
@@ -364,6 +362,16 @@ st.markdown("""
 /* Apply globally */
 html, body, [class*="css"]  {
     font-family: 'Roboto Slab', serif !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<style>
+/* Make sure emoji glyphs render in the language select */
+div[data-baseweb="select"] * {
+  font-family: 'Roboto Slab','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Noto Emoji', sans-serif !important;
 }
 </style>
 """, unsafe_allow_html=True)
