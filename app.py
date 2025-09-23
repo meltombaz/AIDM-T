@@ -76,6 +76,10 @@ T = {
     "contact_text": {
     "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
     "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",},
+    "csv_caption": {
+    "en": "Values should follow the same units as indicated in the input form.",
+    "de": "Die Werte sollten denselben Einheiten entsprechen wie im Eingabeformular angegeben."},
+
 
 
 }
@@ -849,8 +853,7 @@ elif selected == "Info":
         "MCH": [29, 31],
     })
     st.dataframe(example)
-    st.caption("Values should follow the same units as indicated in the input form.")
-
+    st.caption(t("csv_caption"))
 
     st.markdown(
     f"""
