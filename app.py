@@ -374,13 +374,14 @@ with col1:
 
 with col2:
     st.markdown(
-        """
+        f"""
         <div class="header-text">
-          <h1>AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics</h1>
+        <h1>{t('title')}</h1>
         </div>
         """,
         unsafe_allow_html=True
     )
+
 
 st.markdown('</div>', unsafe_allow_html=True)
 
