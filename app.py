@@ -17,15 +17,16 @@ st.set_page_config(
 if "lang" not in st.session_state:
     st.session_state.lang = "en"
 # Language switcher in the top-right
-col_en, col_de = st.columns([1,1])
-with col_en:
-    if st.button("🇬🇧 English", use_container_width=True):
-        st.session_state.lang = "en"
-with col_de:
-    if st.button("🇩🇪 Deutsch", use_container_width=True):
-        st.session_state.lang = "de"
+_, col_lang = st.columns([6, 1])
+with col_lang:
+    choice = st.selectbox(
+        "Language / Sprache",
+        ["🇬🇧 English", "🇩🇪 Deutsch"],   # with flags
+        index=0 if st.session_state.lang == "en" else 1,
+        label_visibility="collapsed"
+    )
+    st.session_state.lang = "en" if "English" in choice else "de"
 LANG = st.session_state.lang
-
 
 # --- Translation dictionary ---
 T = {
