@@ -329,7 +329,7 @@ st.markdown("""
     }
     .header-text h1 {
         margin: 0;
-        line-height: 1.5;
+        line-height: 2.5;
     }
     </style>
 """, unsafe_allow_html=True)
