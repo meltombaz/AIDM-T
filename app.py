@@ -670,7 +670,8 @@ if selected == "Home":
     # Button row (centered, spans both columns)
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        submit = st.button("Get risk estimate")
+        submit = st.button(t("get_estimate"))
+
 
     st.markdown('</div>', unsafe_allow_html=True)  # close card
 
