@@ -728,14 +728,6 @@ elif selected == "Info":
             For questions or feedback regarding this tool, you can reach me directly at
             <a href="mailto:mlktombaz@gmail.com">mlktombaz@gmail.com</a>.
             </p>
-            <p>
-            Alternatively, visit our
-            <a href="https://www.bg-kliniken.de/klinik-tuebingen/ueber-uns/unsere-einrichtungen/siegfried-weller-institut/"
-               target="_blank">institute page</a>
-            or connect with us on
-            <a href="https://www.linkedin.com/company/siegfried-weller-institute-for-trauma-research/"
-               target="_blank">LinkedIn</a>.
-            </p>
         </div>
     </div>
     """, unsafe_allow_html=True)
