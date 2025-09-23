@@ -519,20 +519,35 @@ REF_RANGES = {
     "MCH": "≈ 28–33",
 }
 
-def label_with_unit(name: str) -> str:
-    base = LABELS.get(name, name)
-    unit = UNITS.get(name)
-    return f"{base} ({unit})" if unit else base
 
-def help_with_range(name: str) -> str | None:
-    rr = REF_RANGES.get(name)
-    return f"Typical range: {rr} {UNITS.get(name, '')}".strip() if rr else None
+# --- German display (only what differs from English) ---
+LABELS_DE = {
+    "Age": "Alter",
+    "Leukocytes": "Leukozyten",
+    "MCHC": "MCHC",
+    "Waist Circumference": "Taillenumfang",
+    "APTT": "APTT",
+    "QUICK": "QUICK",
+    "Potassium": "Kalium",
+    "MCH": "MCH",
+    YESNO_2_0_FEATURE: "Frühere hohe Blutzuckerwerte",
+    SMOKING_YEARS_FEATURE: "Raucheranamnese",
+}
 
-def inline_range_hint(name: str):
-    rr = REF_RANGES.get(name)
-    if not rr: return
-    unit = UNITS.get(name, "")
-    st.markdown(f"<div class='inline-hint'>Typical range: {rr} {unit}</div>", unsafe_allow_html=True)
+UNITS_DE = {
+    "Age": "Jahre",
+    "Leukocytes": "10^3/µL",
+    "MCHC": "g/dL",
+    "Waist Circumference": "cm",
+    "APTT": "s",
+    "QUICK": "%",
+    "Potassium": "mmol/L",
+    "MCH": "pg",
+    YESNO_2_0_FEATURE: None,
+    SMOKING_YEARS_FEATURE: "Jahre",
+}
+
+RANGE_PREFIX = {"en": "Typical range:", "de": "Typischer Bereich:"}
 
 def has_feat(friendly_name: str) -> bool:
     # Forgiving: render if FEATURES is missing/not iterable
@@ -561,6 +576,34 @@ def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
         except Exception:
             row[feat] = np.nan
     return pd.DataFrame([row]).reindex(columns=features)
+
+
+def display_label(key: str) -> str:
+    if LANG == "de":
+        return LABELS_DE.get(key, LABELS.get(key, key))
+    return LABELS.get(key, key)
+
+def display_unit(key: str) -> str | None:
+    if LANG == "de":
+        return UNITS_DE.get(key, UNITS.get(key))
+    return UNITS.get(key)
+
+def label_with_unit(key: str) -> str:
+    lab = display_label(key)
+    unit = display_unit(key)
+    return f"{lab} ({unit})" if unit else lab
+
+def help_with_range(key: str) -> str | None:
+    rng = REF_RANGES.get(key)
+    if not rng:
+        return None
+    return f"{RANGE_PREFIX[LANG]} {rng} {display_unit(key) or ''}".strip()
+
+def inline_range_hint(key: str):
+    hint = help_with_range(key)
+    if hint:
+        st.caption(hint)
+
 
 # ------------------ Header NAV band ------------------
 with st.container():
@@ -595,13 +638,19 @@ if selected == "Home":
                 label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
             )
 
+        # Previous high blood sugar
         if has_feat(YESNO_2_0_FEATURE):
-            yn = st.radio(t("YESNO_2_0_FEATURE"), [t("no"), t("yes")], horizontal=True, index=0)
+            yn = st.radio(
+                label_with_unit(YESNO_2_0_FEATURE),
+                [t("no"), t("yes")],
+                horizontal=True, index=0
+            )
             inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == t("yes") else 0
 
+        # Smoking history
         if has_feat(SMOKING_YEARS_FEATURE):
             status = st.radio(
-                t("SMOKING_YEARS_FEATURE"),
+                label_with_unit(SMOKING_YEARS_FEATURE),
                 [t("non_smoker"), t("ex_smoker"), t("curr_smoker")],
                 index=0
             )
@@ -614,6 +663,7 @@ if selected == "Home":
                     min_value=0, max_value=80, value=5, step=1
                 )
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = years
+
 
         if has_feat("Leukocytes"):
             inputs[key_for("Leukocytes")] = st.number_input(
