@@ -744,17 +744,23 @@ if selected == "Home":
                 st.error("Could not score the file. Please check the columns and values.")
 
 elif selected == "Info":
-    st.markdown("<h3>About the Algorithm</h3>", unsafe_allow_html=True)
-    st.write(
-        """
-        This risk prediction tool (AIDMT) was developed using anonymized trauma clinic data.
-        Multiple machine learning algorithms (e.g., Random Forest, Gradient Boosting, XGBoost, MLP)
-        were trained and evaluated with nested cross-validation. The final model uses a reduced set
-        of the most predictive features, selected by SHAP importance analysis.
+    st.markdown(f"<h3>{t('about_algo')}</h3>", unsafe_allow_html=True)
+    st.write({
+        "en": (
+            "This risk prediction tool (AIDMT) was developed using anonymized trauma clinic data. "
+            "Multiple machine learning algorithms (e.g., Random Forest, Gradient Boosting, XGBoost, MLP) "
+            "were trained and evaluated with nested cross-validation. "
+            "The final model uses a reduced set of the most predictive features, selected by SHAP importance analysis.\n\n"
+            "**Important:** The tool is a decision-support system only and does not replace a clinical diagnosis."
+        ),
+        "de": (
+            "Dieses Risikovorhersagetool (AIDMT) wurde mit anonymisierten Traumaklinikdaten entwickelt. "
+            "Mehrere maschinelle Lernalgorithmen (z. B. Random Forest, Gradient Boosting, XGBoost, MLP) "
+            "wurden mittels verschachtelter Kreuzvalidierung trainiert und evaluiert. "
+            "Das Endmodell verwendet eine reduzierte Menge der prädiktivsten Merkmale, ausgewählt durch SHAP-Analyse.\n\n"
+            "**Wichtig:** Das Tool dient ausschließlich als Entscheidungsunterstützungssystem und ersetzt keine klinische Diagnose."
+        ),}[LANG])
 
-        **Disclaimer:** The tool is a decision-support system only and does not replace a clinical diagnosis!
-        """
-    )
 
     st.markdown("<h3>Example CSV Format</h3>", unsafe_allow_html=True)
     example = pd.DataFrame({
