@@ -17,17 +17,15 @@ st.set_page_config(
 if "lang" not in st.session_state:
     st.session_state.lang = "en"
 # Language switcher in the top-right
-# wrapper
-st.markdown('<div class="lang-picker">', unsafe_allow_html=True)
-choice = st.selectbox(
-    "Language / Sprache",
-    ["🇬🇧 English", "🇩🇪 Deutsch"],
-    index=0 if st.session_state.lang == "en" else 1,
-    label_visibility="collapsed",
-)
-st.markdown('</div>', unsafe_allow_html=True)
-
-st.session_state.lang = "en" if "English" in choice else "de"
+_, col_lang = st.columns([6, 1])
+with col_lang:
+    choice = st.selectbox(
+        "Language / Sprache",
+        ["🇬🇧 English", "🇩🇪 Deutsch"],   # with flags
+        index=0 if st.session_state.lang == "en" else 1,
+        label_visibility="collapsed"
+    )
+    st.session_state.lang = "en" if "English" in choice else "de"
 LANG = st.session_state.lang
 
 
