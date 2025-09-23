@@ -46,6 +46,13 @@ T = {
         "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
         "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
     },
+    "yes": {"en": "Yes", "de": "Ja"},
+    "no": {"en": "No", "de": "Nein"},
+
+    "non_smoker": {"en": "Non-smoker", "de": "Nichtraucher"},
+    "ex_smoker": {"en": "Ex-smoker", "de": "Ehemalige/r Raucher/in"},
+    "curr_smoker": {"en": "Current smoker", "de": "Aktuelle/r Raucher/in"},
+    "years_smoking_0": {"en": "Years smoking: 0", "de": "Rauchjahre: 0"},
     "host_notice": {
     "en": ("This application is provided as a free, research-oriented tool. "
            "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
