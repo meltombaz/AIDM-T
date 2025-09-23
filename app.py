@@ -592,19 +592,13 @@ if selected == "Home":
     with col1:
         if has_feat("Age"):
             inputs[key_for("Age")] = st.number_input(
-                label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
+                t("Age"), min_value=0, max_value=120, value=45, step=1
             )
 
-        # Previous high blood sugar (YES/NO)
         if has_feat(YESNO_2_0_FEATURE):
-            yn = st.radio(
-                t("YESNO_2_0_FEATURE"),
-                [t("no"), t("yes")],
-                horizontal=True, index=0
-            )
+            yn = st.radio(t("YESNO_2_0_FEATURE"), [t("no"), t("yes")], horizontal=True, index=0)
             inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == t("yes") else 0
 
-        # Smoking status
         if has_feat(SMOKING_YEARS_FEATURE):
             status = st.radio(
                 t("SMOKING_YEARS_FEATURE"),
@@ -612,7 +606,7 @@ if selected == "Home":
                 index=0
             )
             if status == t("non_smoker"):
-                st.markdown(f"<p class='inline-hint'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='color:#5b5e6a; font-size:.9rem;'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
             else:
                 years = st.number_input(
@@ -623,74 +617,58 @@ if selected == "Home":
 
         if has_feat("Leukocytes"):
             inputs[key_for("Leukocytes")] = st.number_input(
-                label_with_unit("Leukocytes"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("Leukocytes"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("Leukocytes")
             )
-
+            inline_range_hint("Leukocytes")
 
         if has_feat("Waist Circumference"):
             inputs[key_for("Waist Circumference")] = st.number_input(
-                label_with_unit("Waist Circumference"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.1f",
+                t("Waist Circumference"), min_value=0.0, value=0.0, format="%.1f",
                 help=help_with_range("Waist Circumference")
             )
+            inline_range_hint("Waist Circumference")
 
     with col2:
         if has_feat("QUICK"):
             inputs[key_for("QUICK")] = st.number_input(
-                label_with_unit("QUICK"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("QUICK"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("QUICK")
             )
+            inline_range_hint("QUICK")
 
         if has_feat("APTT"):
             inputs[key_for("APTT")] = st.number_input(
-                label_with_unit("APTT"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("APTT"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("APTT")
             )
+            inline_range_hint("APTT")
 
         if has_feat("Potassium"):
             inputs[key_for("Potassium")] = st.number_input(
-                label_with_unit("Potassium"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("Potassium"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("Potassium")
             )
+            inline_range_hint("Potassium")
 
         if has_feat("MCHC"):
             inputs[key_for("MCHC")] = st.number_input(
-                label_with_unit("MCHC"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("MCHC"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("MCHC")
             )
+            inline_range_hint("MCHC")
 
         if has_feat("MCH"):
             inputs[key_for("MCH")] = st.number_input(
-                label_with_unit("MCH"),
-                min_value=0.0,                 # 🚫 no negatives
-                value=0.0,
-                format="%.2f",
+                t("MCH"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("MCH")
             )
+            inline_range_hint("MCH")
 
     # Button row (centered, spans both columns)
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
         submit = st.button(t("get_estimate"))
-
 
     st.markdown('</div>', unsafe_allow_html=True)  # close card
 
@@ -701,9 +679,9 @@ if selected == "Home":
         try:
             proba = float(pipe.predict_proba(x1)[0, 1])
         except Exception:
-            st.error("Unable to calculate risk. Please review inputs.")
+            st.error("Unable to calculate risk. Please review inputs." if LANG == "en"
+                     else "Risiko konnte nicht berechnet werden. Bitte Eingaben prüfen.")
             st.stop()
-
 
         thr = max(0.0, min(1.0, threshold))
         label, cls = (t("low"), "badge-low")
