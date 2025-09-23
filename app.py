@@ -411,6 +411,32 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* 🔹 Remove top white gap */
+.block-container {
+    padding-top: 0rem !important;   /* tighten header spacing */
+}
+
+/* 🔹 Remove horizontal rules / extra lines */
+hr, .stMarkdown hr {
+    display: none !important;
+}
+
+/* 🔹 Kill those rounded "lines" under option_menu */
+div[data-testid="stHorizontalBlock"] > div[role="radiogroup"] {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 🔹 Remove faint border under expander headers */
+.streamlit-expanderHeader {
+    border: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 
 # ------------------ Branded header ------------------
 st.markdown("""
