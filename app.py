@@ -16,17 +16,17 @@ except Exception:
     HAS_SKOPS = False
 import joblib  # fallback
 
-# Must come FIRST — before any st.columns, st.selectbox, etc.
 st.set_page_config(
     page_title="AIDMT — Pre-/Diabetes Risk",
     page_icon="🩺",
     layout="wide"
 )
 
-# Now you can safely put the language switcher here ↓
+# --- Language state ---
 if "lang" not in st.session_state:
-    st.session_state.lang = "en"
+    st.session_state.lang = "en"  # "en" or "de"
 
+# Language switcher in the top-right
 _, col_lang = st.columns([6, 1])
 with col_lang:
     choice = st.selectbox("Language / Sprache", ["English", "Deutsch"],
@@ -34,6 +34,8 @@ with col_lang:
                           label_visibility="collapsed")
     st.session_state.lang = "en" if choice == "English" else "de"
 LANG = st.session_state.lang
+
+
 
 # --- Translation dictionary ---
 T = {
@@ -590,7 +592,7 @@ with st.container():
 if selected == "Home":
     # ------------------ Input form ------------------
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown(f"<h3>{t('patient_values')}</h3>", unsafe_allow_html=True)
+    sst.markdown(f"<h3>{t('patient_values')}</h3>", unsafe_allow_html=True)
 
 
 
