@@ -70,8 +70,13 @@ T = {
         "AIDMT ist für den Einsatz in <strong>Traumakliniken</strong> als Entscheidungsunterstützung gedacht, "
         "um das Risiko für <strong>Prädiabetes und Diabetes</strong> auf Grundlage routinemäßig erhobener Daten zu schätzen. "
         "Es stellt keine definitive Diagnose dar, und alle Ergebnisse sollten von qualifizierten Kliniker:innen interpretiert werden."
-    ),
-},
+    )},
+    "example_csv": {"en": "Example CSV Format", "de": "Beispiel-CSV-Format"},
+    "contact_us": {"en": "Contact Us", "de": "Kontakt"},
+    "contact_text": {
+    "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
+    "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",},
+
 
 }
 
@@ -830,7 +835,7 @@ elif selected == "Info":
         ),}[LANG])
 
 
-    st.markdown("<h3>Example CSV Format</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3>{t('example_csv')}</h3>", unsafe_allow_html=True)
     example = pd.DataFrame({
         "Age": [45, 62],
         "Previous High Blood Sugar Levels": [0, 2],
@@ -848,18 +853,17 @@ elif selected == "Info":
 
 
     st.markdown(
-    """
+    f"""
     <div class="infobox">
         <div class="icon">📧</div>
         <div>
-            <h4>Contact Us</h4>
-            <p>
-            For questions or feedback regarding this tool, you can reach me directly at
-            <a href="mailto:mlktombaz@gmail.com">mlktombaz@gmail.com</a>.
-            </p>
+            <h4>{t('contact_us')}</h4>
+            <p>{t('contact_text')}</p>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True)
+
 
 
     # Admin lives here now (no more above-tabs)
