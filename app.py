@@ -708,10 +708,16 @@ if selected == "Home":
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Batch CSV stays on Home
-    with st.expander("📄 Batch scoring (optional)"):
-        st.write("Upload a CSV with the same column names as the model schema. "
-                 "Friendly names (e.g., 'Leukocytes', 'Waist Circumference') are accepted and will be mapped.")
-        csv = st.file_uploader("Upload CSV", type=["csv"])
+    with st.expander(t("batch")):
+        st.write(
+            "Upload a CSV with the same column names as the model schema. "
+            "Friendly names (e.g., 'Leukocytes', 'Waist Circumference') are accepted and will be mapped."
+            if LANG == "en" else
+            "CSV mit denselben Spaltennamen wie im Modellschema hochladen. "
+            "Freundliche Namen (z. B. „Leukozyten“, „Taillenumfang“) werden akzeptiert und zugeordnet."
+        )
+
+        csv = st.file_uploader(t("upload_csv"), type=["csv"])
         if csv is not None:
             try:
                 df = pd.read_csv(csv)
@@ -735,11 +741,10 @@ if selected == "Home":
 
                 st.write(out.head())
                 st.download_button(
-                    "Download results",
+                    t("download"),
                     out.to_csv(index=False).encode("utf-8"),
                     "aidmt_predictions.csv",
-                    "text/csv"
-                )
+                    "text/csv")
             except Exception:
                 st.error("Could not score the file. Please check the columns and values.")
 
