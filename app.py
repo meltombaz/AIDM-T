@@ -23,7 +23,7 @@ with col_lang:
         "Language / Sprache",
         ["🇬🇧 English", "🇩🇪 Deutsch"],   # with flags
         index=0 if st.session_state.lang == "en" else 1,
-        label_visibility="collapsed"
+        label_visibility="visible"
     )
     st.session_state.lang = "en" if "English" in choice else "de"
 LANG = st.session_state.lang
