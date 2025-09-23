@@ -680,7 +680,7 @@ elif selected == "Info":
         were trained and evaluated with nested cross-validation. The final model uses a reduced set
         of the most predictive features, selected by SHAP importance analysis.
 
-        **Disclaimer:** The tool is a decision-support system only and <strong>does not</strong> replace a clinical diagnosis.
+        **Disclaimer:** The tool is a decision-support system only and does not replace a clinical diagnosis!
         """
     )
 
