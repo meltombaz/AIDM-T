@@ -55,7 +55,7 @@ st.markdown(
         background:#f6f8fb !important;
         color:#000 !important;
         border:1px solid #cfd7e3 !important;
-        border-radius:12px !important;
+        border-radius:5px !important;
       }
       .stNumberInput > div > div > input {
         padding:.7rem .9rem !important;
