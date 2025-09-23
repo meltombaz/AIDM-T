@@ -592,7 +592,7 @@ if selected == "Home":
     with col1:
         if has_feat("Age"):
             inputs[key_for("Age")] = st.number_input(
-                t("Age"), min_value=0, max_value=120, value=45, step=1
+                label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
             )
 
         if has_feat(YESNO_2_0_FEATURE):
@@ -606,7 +606,7 @@ if selected == "Home":
                 index=0
             )
             if status == t("non_smoker"):
-                st.markdown(f"<p style='color:#5b5e6a; font-size:.9rem;'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p class='inline-hint'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
             else:
                 years = st.number_input(
@@ -617,14 +617,14 @@ if selected == "Home":
 
         if has_feat("Leukocytes"):
             inputs[key_for("Leukocytes")] = st.number_input(
-                t("Leukocytes"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("Leukocytes"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("Leukocytes")
             )
             inline_range_hint("Leukocytes")
 
         if has_feat("Waist Circumference"):
             inputs[key_for("Waist Circumference")] = st.number_input(
-                t("Waist Circumference"), min_value=0.0, value=0.0, format="%.1f",
+                label_with_unit("Waist Circumference"), min_value=0.0, value=0.0, format="%.1f",
                 help=help_with_range("Waist Circumference")
             )
             inline_range_hint("Waist Circumference")
@@ -632,38 +632,39 @@ if selected == "Home":
     with col2:
         if has_feat("QUICK"):
             inputs[key_for("QUICK")] = st.number_input(
-                t("QUICK"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("QUICK"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("QUICK")
             )
             inline_range_hint("QUICK")
 
         if has_feat("APTT"):
             inputs[key_for("APTT")] = st.number_input(
-                t("APTT"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("APTT"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("APTT")
             )
             inline_range_hint("APTT")
 
         if has_feat("Potassium"):
             inputs[key_for("Potassium")] = st.number_input(
-                t("Potassium"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("Potassium"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("Potassium")
             )
             inline_range_hint("Potassium")
 
         if has_feat("MCHC"):
             inputs[key_for("MCHC")] = st.number_input(
-                t("MCHC"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("MCHC"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("MCHC")
             )
             inline_range_hint("MCHC")
 
         if has_feat("MCH"):
             inputs[key_for("MCH")] = st.number_input(
-                t("MCH"), min_value=0.0, value=0.0, format="%.2f",
+                label_with_unit("MCH"), min_value=0.0, value=0.0, format="%.2f",
                 help=help_with_range("MCH")
             )
             inline_range_hint("MCH")
+
 
     # Button row (centered, spans both columns)
     c1, c2, c3 = st.columns([1, 1, 1])
