@@ -1,27 +1,28 @@
-# AIDMT — Pre-/Diabetes Risk Prediction • Header-band tabs
-
+import streamlit as st
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-import streamlit as st
-from streamlit_option_menu import option_menu  # horizontal header nav
+from streamlit_option_menu import option_menu
+import joblib
 
-# Prefer skops (portable across numpy versions); fall back to joblib
-try:
-    from skops.io import load as skops_load
-    HAS_SKOPS = True
-except Exception:
-    HAS_SKOPS = False
-import joblib  # fallback
+# Must be first Streamlit command
+st.set_page_config(
+    page_title="AIDMT — Pre-/Diabetes Risk",
+    page_icon="🩺",
+    layout="wide"
+)
 
-
-
-
-
-# ------------------ Page setup ------------------
-st.set_page_config(page_title="AIDMT — Pre-/Diabetes Risk", page_icon="🩺", layout="wide")
+# Language switcher
+if "lang" not in st.session_state:
+    st.session_state.lang = "en"
+_, col_lang = st.columns([6, 1])
+with col_lang:
+    choice = st.selectbox("Language / Sprache", ["English", "Deutsch"],
+                          index=0 if st.session_state.lang == "en" else 1,
+                          label_visibility="collapsed")
+    st.session_state.lang = "en" if choice == "English" else "de"
+LANG = st.session_state.lang
 
 # Hide Streamlit system header (keeps only your branded header)
 st.markdown(
