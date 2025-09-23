@@ -329,7 +329,7 @@ with col2:
     st.markdown(
         """
         <div class="header-text">
-          <h1>AI-based Diabetes Mellitus<br>Prediction Tool for Trauma Clinics</h1>
+          <h1>AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics</h1>
         </div>
         """,
         unsafe_allow_html=True
