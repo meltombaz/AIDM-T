@@ -218,7 +218,7 @@ st.markdown(
     /* Use your uploaded logo as repeating background */
     .stApp {
         background-color: #004994 !important;   /* fallback blue */
-        background-image: url("background.png");
+        background-image: "background.png"s;
         background-repeat: repeat;
         background-size: 120px;   /* adjust logo size */
         background-position: center;
