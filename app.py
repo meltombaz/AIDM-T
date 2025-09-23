@@ -402,20 +402,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-/* Reduce top padding to shrink white gap under the language dropdown */
-.block-container {
-    padding-top: 0.1rem !important;   /* default is ~6rem */
-}
-</style>
-""", unsafe_allow_html=True)
+
 
 st.markdown("""
 <style>
 /* 🔹 Remove top white gap */
 .block-container {
-    padding-top: 0rem !important;   /* tighten header spacing */
+    padding-top: 0.1rem !important;   /* tighten header spacing */
 }
 
 /* 🔹 Remove horizontal rules / extra lines */
@@ -433,6 +426,48 @@ div[data-testid="stHorizontalBlock"] > div[role="radiogroup"] {
 .streamlit-expanderHeader {
     border: none !important;
 }
+</style>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<style>
+/* 1) Kill the big top gap */
+.block-container{
+  /* collapse margin & padding introduced earlier */
+  margin-top: .25rem !important;
+  padding-top: .5rem !important;
+}
+
+/* also make sure the first element inside doesn’t add its own gap */
+.block-container > :first-child{
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 2) Tighten the header band */
+.header-box{
+  margin-top: .25rem !important;
+  margin-bottom: .5rem !important;
+}
+
+/* 3) Remove any horizontal rules/bars (markdown hr, Streamlit divider, etc.) */
+hr, .stMarkdown hr, div[role="separator"], .stDivider, .st-emotion-cache-1dp5vir {
+  display: none !important;
+}
+
+/* 4) If any “line” is a full-width container with only padding/border, neutralize it */
+.block-container > div:empty { display:none !important; }
+.block-container > div:has(> hr) { display:none !important; }
+
+/* 5) Option-menu / nav row: no bottom border/shadow lines */
+div[data-testid="stHorizontalBlock"] > div[role="radiogroup"]{
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 6) Expander headers: remove faint underline */
+.streamlit-expanderHeader{ border: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
