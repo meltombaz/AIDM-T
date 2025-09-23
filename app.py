@@ -404,16 +404,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-/* Only affect the language select */
-.lang-picker [data-baseweb="select"] * {
-  font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Noto Emoji', system-ui, sans-serif !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
 
 # ------------------ Branded header ------------------
 st.markdown("""
