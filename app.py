@@ -131,7 +131,7 @@ st.markdown(
         border-radius:12px !important;
       }
       .stNumberInput > div > div > input {
-        padding:.7rem .9rem !important;
+        padding:1.5rem .9rem !important;
       }
       .stTextInput input::placeholder,
       .stTextArea textarea::placeholder { color:#6b7280 !important; }
