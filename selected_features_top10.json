@@ -11,5 +11,5 @@
     "MCH",
     "Smoking for how long"
   ],
-  "source": "posthoc_cv_shap/gb/shap_importance_aggregated.csv"
+  "model_key": "gb"
 }
