@@ -1,0 +1,15 @@
+{
+  "features": [
+    "Age",
+    "Previous High Blood Sugar Levels",
+    "MCHC",
+    "WaistCircumference",
+    "APTT",
+    "QUICK",
+    "Potassium",
+    "LEU",
+    "Sodium",
+    "CREA"
+  ],
+  "model_key": "gb"
+}
