@@ -1,35 +1,42 @@
+# app.py — AIDMT (updated for new Top-10 + dynamic schema/order)
 import streamlit as st
 import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
 from streamlit_option_menu import option_menu
-import joblib
 
-# Must be first Streamlit command
+# Prefer skops (portable across numpy versions); fall back to joblib
+try:
+    from skops.io import load as skops_load
+    HAS_SKOPS = True
+except Exception:
+    HAS_SKOPS = False
+import joblib  # fallback
+
+# ============== Streamlit base config ==============
 st.set_page_config(
     page_title="AIDMT — Pre-/Diabetes Risk",
     page_icon="🩺",
     layout="wide"
 )
 
-# Language switcher
+# ============== Language switcher ==============
 if "lang" not in st.session_state:
     st.session_state.lang = "en"
-# Language switcher in the top-right
 _, col_lang = st.columns([6, 1])
 with col_lang:
     choice = st.selectbox(
         "Language / Sprache",
-        ["🇬🇧 English", "🇩🇪 Deutsch"],   # with flags
+        ["🇬🇧 English", "🇩🇪 Deutsch"],
         index=0 if st.session_state.lang == "en" else 1,
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="lang_select"
     )
     st.session_state.lang = "en" if "English" in choice else "de"
 LANG = st.session_state.lang
 
-
-# --- Translation dictionary ---
+# ============== Translations ==============
 T = {
     "title": {
         "en": "AI-based Diabetes Mellitus Prediction Tool for Trauma Clinics",
@@ -46,6 +53,7 @@ T = {
     "upload_csv": {"en": "Upload CSV", "de": "CSV hochladen"},
     "download": {"en": "Download results", "de": "Ergebnisse herunterladen"},
     "about_algo": {"en": "About the Algorithm", "de": "Über den Algorithmus"},
+    "about_aidmt": {"en": "About AIDMT", "de": "Über AIDMT"},
     "contact_us": {"en": "Contact Us", "de": "Kontakt"},
     "contact_text": {
         "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
@@ -53,70 +61,63 @@ T = {
     },
     "yes": {"en": "Yes", "de": "Ja"},
     "no": {"en": "No", "de": "Nein"},
-
-    "non_smoker": {"en": "Non-smoker", "de": "Nichtraucher"},
-    "ex_smoker": {"en": "Ex-smoker", "de": "Ehemalige/r Raucher/in"},
-    "curr_smoker": {"en": "Current smoker", "de": "Aktuelle/r Raucher/in"},
+    "non_smoker": {"en": "Non-smoker", "de": "Nichtraucher:in"},
+    "ex_smoker": {"en": "Ex-smoker", "de": "Ehemalige:r Raucher:in"},
+    "curr_smoker": {"en": "Current smoker", "de": "Aktuelle:r Raucher:in"},
     "years_smoking_0": {"en": "Years smoking: 0", "de": "Rauchjahre: 0"},
-    "about_aidmt": {"en": "About AIDMT", "de": "Über AIDMT"},
     "host_notice": {
-    "en": ("This application is provided as a free, research-oriented tool. "
-           "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
-           "We appreciate your understanding."),
-    "de": ("Diese frei gehostete, forschungsorientierte App kann aufgrund von Hosting-Beschränkungen "
-           "gelegentlich langsam reagieren oder abstürzen. Vielen Dank für Ihr Verständnis."),},
+        "en": ("This application is provided as a free, research-oriented tool. "
+               "Due to hosting limitations, it may occasionally experience slowdowns or unexpected crashes. "
+               "We appreciate your understanding."),
+        "de": ("Diese frei gehostete, forschungsorientierte App kann aufgrund von Hosting-Beschränkungen "
+               "gelegentlich langsam reagieren oder abstürzen. Vielen Dank für Ihr Verständnis."),
+    },
     "about_text": {
-    "en": (
-        "AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool "
-        "to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. "
-        "It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians."
-    ),
-    "de": (
-        "AIDMT ist für den Einsatz in <strong>Traumakliniken</strong> als Entscheidungsunterstützung gedacht, "
-        "um das Risiko für <strong>Prädiabetes und Diabetes</strong> auf Grundlage routinemäßig erhobener Daten zu schätzen. "
-        "Es stellt keine definitive Diagnose dar, und alle Ergebnisse sollten von qualifizierten Kliniker:innen interpretiert werden."
-    )},
+        "en": (
+            "AIDMT is intended for use in <strong>trauma clinics</strong> as a decision-support tool "
+            "to estimate the risk of <strong>prediabetes and diabetes</strong> based on routinely collected data. "
+            "It does not provide a definitive diagnosis, and all results should be interpreted by qualified clinicians."
+        ),
+        "de": (
+            "AIDMT ist für den Einsatz in <strong>Traumakliniken</strong> als Entscheidungsunterstützung gedacht, "
+            "um das Risiko für <strong>Prädiabetes und Diabetes</strong> auf Grundlage routinemäßig erhobener Daten zu schätzen. "
+            "Es stellt keine definitive Diagnose dar, und alle Ergebnisse sollten von qualifizierten Kliniker:innen interpretiert werden."
+        ),
+    },
     "example_csv": {"en": "Example CSV Format", "de": "Beispiel-CSV-Format"},
-    "contact_us": {"en": "Contact Us", "de": "Kontakt"},
-    "contact_text": {
-    "en": "For questions or feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",
-    "de": "Bei Fragen oder Feedback: <a href='mailto:mlktombaz@gmail.com'>mlktombaz@gmail.com</a>",},
     "csv_caption": {
-    "en": "Values should follow the same units as indicated in the input form.",
-    "de": "Die Werte sollten denselben Einheiten entsprechen wie im Eingabeformular angegeben."},
-
-
-
+        "en": "Values should follow the same units as indicated in the input form.",
+        "de": "Die Werte sollten denselben Einheiten entsprechen wie im Eingabeformular angegeben.",
+    },
 }
 
 def t(key: str) -> str:
     return T.get(key, {}).get(LANG, key)
 
-
+# ============== Global CSS ==============
 st.markdown("""
 <style>
-/* ===== App frame ===== */
 :root { color-scheme: light; }
 header[data-testid="stHeader"]{ display:none; }
 html, body, .stApp { background:#004994 !important; }
 
-/* ===== Page container (card) ===== */
+/* Page container (card) */
 .block-container{
   max-width:1280px; width:min(1280px,96vw);
-  margin:.25rem auto 2rem;          /* tighten top gap */
-  padding:.75rem 2rem;               /* tighter padding */
+  margin:.25rem auto 2rem;
+  padding:.75rem 2rem;
   background:#fff; border-radius:18px;
   box-shadow:0 10px 28px rgba(0,0,0,.18);
 }
 .block-container > :first-child{ margin-top:0!important; padding-top:0!important; }
 
-/* ===== Typography ===== */
+/* Typography */
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap');
 html, body, [class*="css"]{ font-family:'Roboto Slab',serif !important; }
 h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
 h1,h2{ letter-spacing:.2px; } a{ color:#004994 !important; }
 
-/* ===== Inputs ===== */
+/* Inputs */
 .stTextInput input,
 .stNumberInput input,
 .stTextArea textarea,
@@ -146,7 +147,7 @@ input[type="radio"], input[type="checkbox"]{ accent-color:#004994 !important; }
   background:#004994 !important; box-shadow:0 0 0 3px rgba(0,73,148,.15) !important;
 }
 
-/* ===== Buttons ===== */
+/* Buttons */
 .stButton > button, .stButton > button *{
   display:flex !important; align-items:center !important; justify-content:center !important;
   height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:700;
@@ -155,10 +156,9 @@ input[type="radio"], input[type="checkbox"]{ accent-color:#004994 !important; }
 }
 .stButton > button:hover{ filter:brightness(1.06); box-shadow:0 8px 18px rgba(86,24,74,.32); }
 .stButton > button:disabled{ background:#b9b9c2 !important; color:#f2f2f2 !important; box-shadow:none; }
-/* center primary button only */
 div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:block; }
 
-/* ===== Cards & badges ===== */
+/* Cards & badges */
 .card{ background:#fff; border:1px solid #eef0f4; border-radius:16px; padding:18px; }
 .card h3{ margin:0 0 .8rem 0; }
 .badge{ display:inline-block; padding:.25rem .6rem; border-radius:999px; font-size:.85rem; }
@@ -168,7 +168,7 @@ div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:bl
 .badge-result{ font-size:1.4rem !important; padding:.6rem 1.2rem !important; }
 .notice{ font-size:.85rem; color:#5b5e6a; font-style:italic; margin-top:.8rem; }
 
-/* ===== Infobox ===== */
+/* Infobox */
 .infobox{
   display:flex; gap:.75rem; align-items:flex-start;
   background:#f4f8ff; border:1px solid #cfd7e3; border-left:6px solid #004994;
@@ -181,12 +181,12 @@ div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:bl
 .infobox h4{ margin:.1rem 0 .25rem 0; font-size:1rem; font-weight:700; }
 .infobox p{ margin:0; font-size:.95rem; }
 
-/* ===== Header band ===== */
+/* Header band */
 .header-box{ background:#004994; border-radius:14px; padding:1rem 1.5rem; margin:.25rem 0 .5rem; }
 .header-text h1{ color:#fff; font-size:2rem; font-weight:800; line-height:1.25; margin:0; }
 @media (max-width:768px){ .header-text h1{ font-size:1.5rem; } }
 
-/* ===== “Radios as tabs” style (Home/Info band) ===== */
+/* Radios as tabs look */
 .tab-radio [role="radiogroup"]{ display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px; }
 .tab-radio [role="radio"]{ cursor:pointer; background:transparent; border:1px solid rgba(255,255,255,.18); border-radius:10px; padding:.45rem .95rem; }
 .tab-radio [role="radio"], .tab-radio [role="radio"] *{ color:#000 !important; -webkit-text-fill-color:#000 !important; font-weight:700 !important; }
@@ -194,32 +194,30 @@ div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:bl
 .tab-radio [role="radio"][aria-checked="true"]{ background:#006226 !important; border-color:#006226 !important; }
 .tab-radio [role="radio"][aria-checked="true"], .tab-radio [role="radio"][aria-checked="true"] *{ color:#000 !important; -webkit-text-fill-color:#000 !important; }
 
-/* ===== Remove stray lines / dividers ===== */
+/* Remove stray lines */
 hr, .stMarkdown hr, div[role="separator"], .stDivider{ display:none !important; }
 .streamlit-expanderHeader{ border:none !important; }
 
-/* ===== Emoji font for language select (Chrome) ===== */
-.lang-picker [data-baseweb="select"] *, 
-[data-baseweb="popover"] [role="listbox"] *, 
+/* Emoji font for language select */
+.lang-picker [data-baseweb="select"] *,
+[data-baseweb="popover"] [role="listbox"] *,
 [data-baseweb="popover"] [role="option"] *{
   font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Noto Emoji', system-ui, sans-serif !important;
 }
 
-/* ===== Footer ===== */
+/* Footer */
 .footer{ color:#fff !important; font-size:.9rem; margin-top:2rem; text-align:center; }
 .footer a{ color:#fff; text-decoration:underline; margin:0 10px; }
 .footer a:hover{ color:#dbeafe; }
 </style>
 """, unsafe_allow_html=True)
 
-
-
-# ------------------ Branded header ------------------
+# ============== Branded header ==============
 st.markdown("""
     <style>
     .header-box .stColumn > div {
         display: flex;
-        align-items: center;   /* vertical center */
+        align-items: center;
     }
     .header-text h1 {
         margin: 0;
@@ -230,25 +228,21 @@ st.markdown("""
 
 st.markdown('<div class="header-box">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
-
 with col1:
-    st.image("background.png", width=175)
-
+    # Replace with your logo path if needed
+    try:
+        st.image("background.png", width=175)
+    except Exception:
+        st.empty()
 with col2:
-    st.markdown(
-        f"""
+    st.markdown(f"""
         <div class="header-text">
         <h1>{t('title')}</h1>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
+    """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-
-# ------------------ About box ------------------
+# ============== About box ==============
 st.markdown(
     f"""
     <div class="infobox">
@@ -262,13 +256,13 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------ Session defaults for Admin settings ------------------
+# ============== Session defaults ==============
 if "mdl_dir_in" not in st.session_state:
     st.session_state.mdl_dir_in = "final_model_top10"
 if "threshold" not in st.session_state:
     st.session_state.threshold = 0.50
 
-# ------------------ Model loading ------------------
+# ============== Model loading helpers ==============
 BASE_DIR = Path(__file__).resolve().parent
 
 def _has_model_files(p: Path) -> bool:
@@ -308,18 +302,38 @@ def load_artifacts(model_dir_text: str | None):
 
     with open(p / "feature_schema.json", "r", encoding="utf-8") as f:
         schema = json.load(f)
-
     features = schema.get("features", [])
     return pipe, features, str(p)
 
-# Use session settings to load
+# Load model + schema
 try:
     pipe, FEATURES, RESOLVED_DIR = load_artifacts(st.session_state.mdl_dir_in)
 except Exception as e:
     st.error(str(e))
     st.stop()
 
-# ------------------ Friendly labels, aliases, units, helpers ------------------
+# ============== Optional: UI order from selected_features_top10.json ==============
+def _load_selected_features_order(resolved_dir: str) -> list[str] | None:
+    candidates = [
+        Path(resolved_dir) / "selected_features_top10.json",
+        BASE_DIR / "selected_features_top10.json",
+        Path("/mnt/data/selected_features_top10.json"),  # local dev fallback
+    ]
+    for c in candidates:
+        try:
+            if c.exists():
+                with open(c, "r", encoding="utf-8") as f:
+                    sel = json.load(f)
+                sel_list = sel.get("features", [])
+                # keep only ones that exist in the active model schema
+                return [f for f in sel_list if f in set(FEATURES)]
+        except Exception:
+            pass
+    return None
+
+FEATURES_ORDER = _load_selected_features_order(RESOLVED_DIR)
+
+# ============== Friendly labels, aliases, units, helpers ==============
 YESNO_2_0_FEATURE = "Previous High Blood Sugar Levels"
 SMOKING_YEARS_FEATURE = "Smoking for how long"
 
@@ -334,24 +348,31 @@ LABELS = {
     "Potassium": "Potassium",
     "MCH": "MCH",
     SMOKING_YEARS_FEATURE: "Smoking history",
+    "Sodium": "Sodium",
+    "CREA": "Creatinine",
+    "Creatinine": "Creatinine",
 }
 
+# Friendly -> schema key
 ALIASES = {
+    "Age": "Age",
+    YESNO_2_0_FEATURE: YESNO_2_0_FEATURE,
+    SMOKING_YEARS_FEATURE: SMOKING_YEARS_FEATURE,
     "Leukocytes": "LEU",
     "Waist Circumference": "WaistCircumference",
-    "Age": "Age",
     "APTT": "APTT",
     "QUICK": "QUICK",
     "Potassium": "Potassium",
     "MCHC": "MCHC",
     "MCH": "MCH",
-    YESNO_2_0_FEATURE: YESNO_2_0_FEATURE,
-    SMOKING_YEARS_FEATURE: SMOKING_YEARS_FEATURE,
+    "Sodium": "Sodium",
+    "CREA": "CREA",
+    "Creatinine": "CREA",  # allow "Creatinine" header to map to CREA
 }
 
 UNITS = {
     "Age": "years",
-    "Leukocytes": "$10^3$/µL",  # (aka 10^9/L)
+    "Leukocytes": "10^3/µL",
     "MCHC": "g/dL",
     "Waist Circumference": "cm",
     "APTT": "s",
@@ -360,6 +381,8 @@ UNITS = {
     "MCH": "pg",
     YESNO_2_0_FEATURE: None,
     SMOKING_YEARS_FEATURE: "years",
+    "Sodium": "mmol/L",
+    "CREA": "mg/dL",  # adjust if your model used µmol/L
 }
 
 REF_RANGES = {
@@ -370,10 +393,10 @@ REF_RANGES = {
     "QUICK": "≈ 70–120",
     "Potassium": "≈ 3.5–5.1",
     "MCH": "≈ 28–33",
+    "Sodium": "≈ 135–145",
+    "CREA": "≈ 0.7–1.2",
 }
 
-
-# --- German display (only what differs from English) ---
 LABELS_DE = {
     "Age": "Alter",
     "Leukocytes": "Leukozyten",
@@ -385,6 +408,9 @@ LABELS_DE = {
     "MCH": "MCH",
     YESNO_2_0_FEATURE: "Frühere hohe Blutzuckerwerte",
     SMOKING_YEARS_FEATURE: "Raucheranamnese",
+    "Sodium": "Natrium",
+    "CREA": "Kreatinin",
+    "Creatinine": "Kreatinin",
 }
 
 UNITS_DE = {
@@ -398,12 +424,13 @@ UNITS_DE = {
     "MCH": "pg",
     YESNO_2_0_FEATURE: None,
     SMOKING_YEARS_FEATURE: "Jahre",
+    "Sodium": "mmol/L",
+    "CREA": "mg/dL",
 }
 
 RANGE_PREFIX = {"en": "Typical range:", "de": "Typischer Bereich:"}
 
 def has_feat(friendly_name: str) -> bool:
-    # Forgiving: render if FEATURES is missing/not iterable
     if "FEATURES" not in globals() or FEATURES is None:
         return True
     try:
@@ -415,21 +442,6 @@ def has_feat(friendly_name: str) -> bool:
 
 def key_for(friendly_name: str) -> str:
     return ALIASES.get(friendly_name, friendly_name)
-
-def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
-    row = {}
-    for feat in features:
-        v = inputs.get(feat, None)
-        if v is None or (isinstance(v, str) and v.strip() == ""):
-            row[feat] = np.nan
-            continue
-        try:
-            fv = float(v)
-            row[feat] = int(fv) if fv.is_integer() else fv
-        except Exception:
-            row[feat] = np.nan
-    return pd.DataFrame([row]).reindex(columns=features)
-
 
 def display_label(key: str) -> str:
     if LANG == "de":
@@ -452,13 +464,21 @@ def help_with_range(key: str) -> str | None:
         return None
     return f"{RANGE_PREFIX[LANG]} {rng} {display_unit(key) or ''}".strip()
 
-def inline_range_hint(key: str):
-    hint = help_with_range(key)
-    if hint:
-        st.caption(hint)
+def _coerce_row(inputs: dict, features: list[str]) -> pd.DataFrame:
+    row = {}
+    for feat in features:
+        v = inputs.get(feat, None)
+        if v is None or (isinstance(v, str) and v.strip() == ""):
+            row[feat] = np.nan
+            continue
+        try:
+            fv = float(v)
+            row[feat] = int(fv) if fv.is_integer() else fv
+        except Exception:
+            row[feat] = np.nan
+    return pd.DataFrame([row]).reindex(columns=features)
 
-
-# ------------------ Header NAV band ------------------
+# ============== NAV (Home / Info) ==============
 with st.container():
     st.markdown('<div class="top-nav">', unsafe_allow_html=True)
     selected = option_menu(
@@ -476,22 +496,31 @@ with st.container():
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ------------------ PAGES ------------------
+# ============== Pages ==============
 if selected == "Home":
-    # ------------------ Input form ------------------
+    # ------- Input form card -------
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown(f"<h3>{t('patient_values')}</h3>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     inputs: dict[str, object] = {}
 
+    # Helper to place a numeric field
+    def num_input(friendly_key: str, min_value: float = 0.0, value: float = 0.0, fmt: str = "%.2f"):
+        if has_feat(friendly_key):
+            inputs[key_for(friendly_key)] = st.number_input(
+                label_with_unit(friendly_key), min_value=min_value, value=value, format=fmt,
+                help=help_with_range(friendly_key)
+            )
+
     with col1:
+        # Age
         if has_feat("Age"):
             inputs[key_for("Age")] = st.number_input(
                 label_with_unit("Age"), min_value=0, max_value=120, value=45, step=1
             )
 
-        # Previous high blood sugar
+        # Previous high blood sugar (Yes/No -> 2/0)
         if has_feat(YESNO_2_0_FEATURE):
             yn = st.radio(
                 label_with_unit(YESNO_2_0_FEATURE),
@@ -500,7 +529,7 @@ if selected == "Home":
             )
             inputs[key_for(YESNO_2_0_FEATURE)] = 2 if yn == t("yes") else 0
 
-        # Smoking history
+        # Smoking history (if model actually needs it)
         if has_feat(SMOKING_YEARS_FEATURE):
             status = st.radio(
                 label_with_unit(SMOKING_YEARS_FEATURE),
@@ -508,69 +537,38 @@ if selected == "Home":
                 index=0
             )
             if status == t("non_smoker"):
-                st.markdown(f"<p class='inline-hint'>{t('years_smoking_0')}</p>", unsafe_allow_html=True)
+                st.caption(t("years_smoking_0"))
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = 0
             else:
-                years = st.number_input(
-                    "Years smoking (years)" if LANG == "en" else "Rauchjahre (Jahre)",
-                    min_value=0, max_value=80, value=5, step=1
-                )
+                years_label = "Years smoking (years)" if LANG == "en" else "Rauchjahre (Jahre)"
+                years = st.number_input(years_label, min_value=0, max_value=80, value=5, step=1)
                 inputs[key_for(SMOKING_YEARS_FEATURE)] = years
 
-
-        if has_feat("Leukocytes"):
-            inputs[key_for("Leukocytes")] = st.number_input(
-                label_with_unit("Leukocytes"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("Leukocytes")
-            )
-
-        if has_feat("Waist Circumference"):
-            inputs[key_for("Waist Circumference")] = st.number_input(
-                label_with_unit("Waist Circumference"), min_value=0.0, value=0.0, format="%.1f",
-                help=help_with_range("Waist Circumference")
-            )
+        # Leukocytes, Waist Circumference
+        num_input("Leukocytes", value=0.0, fmt="%.2f")
+        num_input("Waist Circumference", value=0.0, fmt="%.1f")
 
     with col2:
-        if has_feat("QUICK"):
-            inputs[key_for("QUICK")] = st.number_input(
-                label_with_unit("QUICK"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("QUICK")
-            )
+        # QUICK, APTT, Potassium, MCHC, MCH
+        num_input("QUICK", value=0.0, fmt="%.2f")
+        num_input("APTT", value=0.0, fmt="%.2f")
+        num_input("Potassium", value=0.0, fmt="%.2f")
+        num_input("MCHC", value=0.0, fmt="%.2f")
+        num_input("MCH", value=0.0, fmt="%.2f")
 
-        if has_feat("APTT"):
-            inputs[key_for("APTT")] = st.number_input(
-                label_with_unit("APTT"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("APTT")
-            )
+        # NEW: Sodium & CREA
+        num_input("Sodium", value=0.0, fmt="%.1f")
+        num_input("CREA", value=0.0, fmt="%.2f")
 
-        if has_feat("Potassium"):
-            inputs[key_for("Potassium")] = st.number_input(
-                label_with_unit("Potassium"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("Potassium")
-            )
-
-        if has_feat("MCHC"):
-            inputs[key_for("MCHC")] = st.number_input(
-                label_with_unit("MCHC"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("MCHC")
-            )
-
-        if has_feat("MCH"):
-            inputs[key_for("MCH")] = st.number_input(
-                label_with_unit("MCH"), min_value=0.0, value=0.0, format="%.2f",
-                help=help_with_range("MCH")
-            )
-
-
-    # Button row (centered, spans both columns)
+    # Button row
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        submit = st.button(t("get_estimate"))
+        submit = st.button(t("get_estimate"), type="primary")
 
     st.markdown('</div>', unsafe_allow_html=True)  # close card
 
-    # Prediction & display
-    threshold = st.session_state.threshold
+    # ------- Predict & display -------
+    threshold = float(max(0.0, min(1.0, st.session_state.threshold)))
     if submit:
         x1 = _coerce_row(inputs, FEATURES)
         try:
@@ -580,11 +578,10 @@ if selected == "Home":
                      else "Risiko konnte nicht berechnet werden. Bitte Eingaben prüfen.")
             st.stop()
 
-        thr = max(0.0, min(1.0, threshold))
         label, cls = (t("low"), "badge-low")
-        if proba >= thr:
+        if proba >= threshold:
             label, cls = (t("high"), "badge-high")
-        elif proba >= thr * 0.75:
+        elif proba >= threshold * 0.75:
             label, cls = (t("med"), "badge-med")
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -594,8 +591,7 @@ if selected == "Home":
         st.markdown(f"<p class='notice'>{t('host_notice')}</p>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Batch CSV stays on Home
-    # Batch CSV stays on Home
+    # ------- Batch CSV -------
     with st.expander(t("batch")):
         st.write(
             "Upload a CSV with the same column names as the model schema. "
@@ -609,21 +605,24 @@ if selected == "Home":
         if csv is not None:
             try:
                 df = pd.read_csv(csv)
+                # map friendly -> schema
                 friendly_to_schema = {**{k: k for k in FEATURES}, **ALIASES}
                 df.columns = [friendly_to_schema.get(c, c) for c in df.columns]
                 df = df.reindex(columns=FEATURES)
                 for c in df.columns:
                     df[c] = pd.to_numeric(df[c], errors="coerce")
 
+                # Yes/No mapping for previous high blood sugar, if present
                 if YESNO_2_0_FEATURE in df.columns:
                     df[YESNO_2_0_FEATURE] = df[YESNO_2_0_FEATURE].replace(
-                        {"Yes": 2, "No": 0} if LANG == "en" else {"Ja": 2, "Nein": 0}
+                        {"Yes": 2, "No": 0, "Ja": 2, "Nein": 0}
                     )
                     df[YESNO_2_0_FEATURE] = pd.to_numeric(df[YESNO_2_0_FEATURE], errors="coerce")
 
+                # Smoking friendly to numeric years (if someone puts "Non-smoker")
                 if SMOKING_YEARS_FEATURE in df.columns:
                     df[SMOKING_YEARS_FEATURE] = df[SMOKING_YEARS_FEATURE].replace(
-                        {"Non-smoker": 0} if LANG == "en" else {"Nichtraucher:in": 0}
+                        {"Non-smoker": 0, "Nichtraucher:in": 0}
                     )
                     df[SMOKING_YEARS_FEATURE] = pd.to_numeric(df[SMOKING_YEARS_FEATURE], errors="coerce")
 
@@ -645,7 +644,6 @@ if selected == "Home":
                     "Die Datei konnte nicht ausgewertet werden. Bitte überprüfen Sie Spalten und Werte."
                 )
 
-
 elif selected == "Info":
     st.markdown(f"<h3>{t('about_algo')}</h3>", unsafe_allow_html=True)
     st.write({
@@ -662,40 +660,51 @@ elif selected == "Info":
             "wurden mittels verschachtelter Kreuzvalidierung trainiert und evaluiert. "
             "Das Endmodell verwendet eine reduzierte Menge der prädiktivsten Merkmale, ausgewählt durch SHAP-Analyse.\n\n"
             "**Haftungsausschluss:** Das Tool dient ausschließlich als Entscheidungsunterstützungssystem und ersetzt **keine** klinische Diagnose."
-        ),}[LANG])
+        ),
+    }[LANG])
 
-
+    # ----- Dynamic Example CSV (always mirrors active model) -----
     st.markdown(f"<h3>{t('example_csv')}</h3>", unsafe_allow_html=True)
-    example = pd.DataFrame({
-        "Age": [45, 62],
-        "Previous High Blood Sugar Levels": [0, 2],
-        "Smoking for how long": [0, 15],
-        "Leukocytes": [6.2, 9.1],
-        "MCHC": [34, 35],
-        "Waist Circumference": [95, 110],
-        "APTT": [27.1, 28.3],
-        "QUICK": [105, 92],
-        "Potassium": [4.2, 3.8],
-        "MCH": [29, 31],
-    })
+
+    # Inverse alias map: schema->friendly (best-effort)
+    def _friendly_name(schema_key: str) -> str:
+        # prefer a known friendly name if present
+        for friendly, skey in ALIASES.items():
+            if skey == schema_key:
+                return friendly
+        return schema_key
+
+    def _example_value(schema_key: str):
+        EX = {
+            "Age": 45,
+            "LEU": 6.2, "Leukocytes": 6.2,
+            "MCHC": 34, "MCH": 29,
+            "WaistCircumference": 95,
+            "APTT": 27.5, "QUICK": 105,
+            "Potassium": 4.2, "Sodium": 140,
+            "CREA": 0.9,
+            YESNO_2_0_FEATURE: 0,
+            SMOKING_YEARS_FEATURE: 0,
+        }
+        return EX.get(schema_key, 0)
+
+    order = FEATURES_ORDER if FEATURES_ORDER else FEATURES
+    ex_cols = [_friendly_name(k) for k in order]
+    ex_row1 = {_friendly_name(k): _example_value(k) for k in order}
+    ex_row2 = ex_row1.copy()
+    # tweak a few values
+    if "Age" in order:
+        ex_row2[_friendly_name("Age")] = 62
+    if YESNO_2_0_FEATURE in order:
+        ex_row2[_friendly_name(YESNO_2_0_FEATURE)] = 2
+    if "WaistCircumference" in order:
+        ex_row2[_friendly_name("WaistCircumference")] = 110
+    example = pd.DataFrame([ex_row1, ex_row2], columns=ex_cols)
+
     st.dataframe(example)
     st.caption(t("csv_caption"))
 
-    st.markdown(
-    f"""
-    <div class="infobox">
-        <div class="icon">📧</div>
-        <div>
-            <h4>{t('contact_us')}</h4>
-            <p>{t('contact_text')}</p>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True)
-
-
-
-    # Admin lives here now (no more above-tabs)
+    # ----- Admin -----
     with st.expander("⚙️ Admin", expanded=False):
         st.text_input(
             "Settings ▸ Model folder",
@@ -705,7 +714,7 @@ elif selected == "Info":
         st.slider("Decision threshold", 0.0, 1.0, key="threshold", step=0.01)
         st.caption(f"Active model folder: {RESOLVED_DIR}")
 
-# ------------------ Footer ------------------
+# ============== Footer ==============
 st.markdown(
     """
     <div class="footer">
@@ -717,4 +726,3 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
