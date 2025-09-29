@@ -112,12 +112,12 @@ html, body, .stApp { background:#004994 !important; }
 .block-container > :first-child{ margin-top:0!important; padding-top:0!important; }
 
 /* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap'); 
 
 html, body, [class*="css"] {
-    font-family: 'Roboto', sans-serif; 
-    font-size: 14px;
-    font-weight: 300;
+    font-family: 'Roboto Mono', monospace; 
+    font-size: 16px;
+    font-weight: 200;
     color: #091747;
 }
 h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
