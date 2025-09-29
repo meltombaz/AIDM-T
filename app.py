@@ -183,8 +183,8 @@ div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:bl
 
 /* Header band */
 .header-box{ background:#004994; border-radius:14px; padding:1rem 1.5rem; margin:.25rem 0 .5rem; }
-.header-text h1{ color:#fff; font-size:2rem; font-weight:800; line-height:1.25; margin:0; }
-@media (max-width:768px){ .header-text h1{ font-size:1.5rem; } }
+.header-text h1{ color:#fff; font-size:1.5rem; font-weight:800; line-height:1.25; margin:0; }
+@media (max-width:768px){ .header-text h1{ font-size:2.0rem; } }
 
 /* Radios as tabs look */
 .tab-radio [role="radiogroup"]{ display:flex; gap:.5rem; background:#004994; padding:.35rem; border-radius:12px; }
