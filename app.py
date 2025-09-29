@@ -126,7 +126,7 @@ h1,h2{ letter-spacing:.2px; } a{ color:#004994 !important; }
   border:1px solid #cfd7e3 !important; border-radius:12px !important;
 }
 .stNumberInput > div > div > input{ padding:.7rem .9rem !important; }
-.stTextInput input::placeholder, .stTextArea textarea::placeholder{ color:#6b7280 !important; }
+.stTextInput input::placeholder, .stTextArea textarea::placeholder{ color:#7c9dde !important; }
 .stTextInput input:focus, .stNumberInput input:focus,
 .stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"] > div:focus{
   outline:none !important; border-color:#004994 !important;
