@@ -112,8 +112,14 @@ html, body, .stApp { background:#004994 !important; }
 .block-container > :first-child{ margin-top:0!important; padding-top:0!important; }
 
 /* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-html, body, [class*="css"]{ font-family:'Roboto Mono',serif !important; }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap'); 
+
+html, body, [class*="css"] {
+    font-family: 'Roboto', sans-serif; 
+    font-size: 18px;
+    font-weight: 500;
+    color: #091747;
+}
 h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
 h1,h2{ letter-spacing:.2px; } a{ color:#004994 !important; }
 
