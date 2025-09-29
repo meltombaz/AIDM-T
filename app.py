@@ -176,7 +176,7 @@ div[data-testid="stButton"] button[purpose="primary"]{ margin:0 auto; display:bl
 }
 .infobox .icon{
   width:28px; height:28px; border-radius:999px; background:#004994; color:#fff;
-  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex:0 0 28px;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; flex:0 0 28px;
 }
 .infobox h4{ margin:.1rem 0 .25rem 0; font-size:1rem; font-weight:700; }
 .infobox p{ margin:0; font-size:.95rem; }
