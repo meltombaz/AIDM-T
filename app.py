@@ -112,8 +112,8 @@ html, body, .stApp { background:#004994 !important; }
 .block-container > :first-child{ margin-top:0!important; padding-top:0!important; }
 
 /* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap');
-html, body, [class*="css"]{ font-family:'Roboto Slab',serif !important; }
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+html, body, [class*="css"]{ font-family:'Roboto Mono',serif !important; }
 h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
 h1,h2{ letter-spacing:.2px; } a{ color:#004994 !important; }
 
