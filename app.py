@@ -206,7 +206,7 @@ hr, .stMarkdown hr, div[role="separator"], .stDivider{ display:none !important; 
 }
 
 /* Footer */
-.footer{ color:#fff !important; font-size:.9rem; margin-top:2rem; text-align:center; }
+.footer{ color:#fff !important; font-size:1.5rem; margin-top:2rem; text-align:center; }
 .footer a{ color:#fff; text-decoration:underline; margin:0 10px; }
 .footer a:hover{ color:#dbeafe; }
 </style>
