@@ -116,8 +116,8 @@ html, body, .stApp { background:#004994 !important; }
 
 html, body, [class*="css"] {
     font-family: 'Roboto', sans-serif; 
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 300;
     color: #091747;
 }
 h1,h2,h3,h4,h5,h6,p,span,div,label{ color:#000 !important; }
