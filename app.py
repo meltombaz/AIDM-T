@@ -150,7 +150,7 @@ input[type="radio"], input[type="checkbox"]{ accent-color:#004994 !important; }
 /* Buttons */
 .stButton > button, .stButton > button *{
   display:flex !important; align-items:center !important; justify-content:center !important;
-  height:3.8rem; padding:0 2rem; font-size:1.2rem; font-weight:700;
+  height:3.8rem; padding:0 2rem; font-size:1.5rem; font-weight:700;
   background:#56184a !important; color:#fff !important; border:none !important;
   border-radius:12px !important; box-shadow:0 6px 14px rgba(86,24,74,.25);
 }
