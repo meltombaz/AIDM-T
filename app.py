@@ -116,7 +116,7 @@ html, body, .stApp { background:#004994 !important; }
 
 html, body, [class*="css"] {
     font-family: 'Roboto', sans-serif; 
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 300;
     color: #091747;
 }
